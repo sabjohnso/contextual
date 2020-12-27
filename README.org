@@ -1,0 +1,134 @@
+#+TITLE: Contextual
+
+  - Contextual :: depending on or relating to the circumstances that
+    form the setting for an event, statement, or idea.
+    
+
+* About 
+  This library provides an ad hoc polymorphism/protocol system.  Its
+  development was primarily motivated by an difficulty using monads in
+  C++ with the degree of generality that is accomplished in Haskell and
+  a few other languages. However the implementation extends well beyond just
+  monads and includes protocols for the following
+    - semigroups
+    - monoids
+    - functors
+    - applicative functors
+    - monads
+    - comonads
+    - categories
+    - arrows
+
+* Quick Start
+
+* Objectives
+  
+  
+* Getting Started
+  
+** Requirements
+
+**
+
+** Sytnax Analogies
+
+#+BEGIN_SRC c++
+  let(3, [](auto x){ return
+  let(4, [](auto y){ return
+        x+y; }); })
+#+END_SRC
+
+#+BEGIN_SRC scheme
+  ((λ (x)
+     ((λ (y)
+        (+ x y)) 3))
+   4)
+#+END_SRC
+
+#+BEGIN_SRC scheme
+  ((λ (do)
+     ((do 3) (λ (x)
+     ((do 4) (λ (y)
+         (+ x y))))))
+   (λ (x) (λ (f) (f x))))
+#+END_SRC
+
+#+BEGIN_SRC
+LET 3 BE x IN 
+LET 4 BE Y IN
++ x y
+#+END_SRC
+
+#+BEGIN_SRC lisp
+  (fucall (lambda (x)
+     (funcall (lambda (y) (+ x y))
+      3))
+   4)
+#+END_SRC
+
+#+BEGIN_SRC julia
+  let x = 3,
+      y = 4
+    x+y
+  end
+#+END_SRC
+
+#+BEGIN_SRC lisp
+  (let ((x 3)
+        (y 4))
+    (+ x y))
+#+END_SRC
+
+#+BEGIN_SRC c++
+  fmap([](auto x){ return x+x; }, list(1, 2, 3));
+#+END_SRC
+
+#+BEGIN_SRC c++
+    letF(list(1, 2, 3), [](auto x){ 
+      return x+x;
+    });
+#+END_SRC
+
+#+BEGIN_SRC c++
+  fApply_(fMap(curry([](auto x, auto y){ return x+y; }, nat<2>), mx), my);
+#+END_SRC
+
+#+BEGIN_SRC c++
+  letM(list(1, 2), [](auto x){ return
+  letM(list(3, 4), [](auto y){ return
+        returnM(x+y); }); });
+#+END_SRC
+
+
+* Contextual Monad
+  
+
+* Work
+** TODO Monoid
+** TODO Category
+** TODO Arrow
+*** TODO ArrowChoice
+*** TODO ArrowLoop
+** TODO Functor
+** TODO Applicative
+** TODO Monad
+*** TODO Support Functions
+*** TODO MonadFail
+*** TODO MonadPlus
+*** TODO MonadReader
+*** TODO MonadWriter
+*** TODO MonadState
+*** TODO MonadCont
+*** TODO Instances
+**** TODO Type
+**** TODO Free
+**** TODO Maybe
+***** TODO optional
+***** TODO shared_ptr
+***** TODO unique_ptr
+**** TODO Sequence
+** TODO Comonads
+
+
+
+

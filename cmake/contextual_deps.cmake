@@ -6,3 +6,8 @@ if(NOT EXISTS ${PROJECT_SOURCE_DIR}/cmake_utilities/FindCMakeUtilities.cmake)
 endif()
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_utilities)
 find_package(CMakeUtilities)
+
+find_package(type_utility REQUIRED)
+find_package(function_utility REQUIRED)
+find_package(list_processing REQUIRED)
+
