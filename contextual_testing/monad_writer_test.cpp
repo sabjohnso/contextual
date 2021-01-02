@@ -70,60 +70,38 @@ namespace Contextual::Details::Testing
     };
 
     template<typename LogContext >
-    class LoggingContext {
+    class ProtoLoggingContext {
     public:
 
       static constexpr LogContext logContext{};
 
-      template<typename T>
-      static auto
-      pure(T x){
-        return pair(x, run(logContext, mEmpty));
-      }
+      static constexpr auto pure =
+        [](auto x){ return pair(x, run(logContext, mEmpty)); };
 
-      template<typename F, typename T>
-      static  auto
-      fMap(F f, T mx){
-        return pair(f(mx.first), mx.second);
-      }
+      static constexpr auto flatMap =
+        [](auto f, auto mx){
+          auto [x, wx] = mx;
+          auto [y, wy] = f(x);
+          return pair(y, run(logContext, mAppend(wy, wx))); };
 
-      template<typename F, typename T>
-      static auto
-      flatMap(F f, T mx){
-        auto [y, w] = f(mx.first);
-        return pair(y, run(logContext, mAppend(w, mx.second)));
-      }
+      static constexpr auto writer = identity;
 
-      template<typename T>
-      static auto
-      flatten(T mmx){
-        return pair(mmx.first.first,run(logContext, mAppend(mmx.first.second, mmx.second)));
-      }
+      static constexpr auto listen =
+        [](auto aw){ return pair(aw, aw.second); };
 
-      template<typename T>
-      static auto
-      writer(T mx){ return mx; }
+      static constexpr auto pass =
+        [](auto mx){
+          auto [xf, w] = mx;
+          auto [x,  f] = xf;
+          return pair(x, f(w));
+        };
+    }; // end of class ProtoLoggingContext
 
-      template<typename W>
-      static auto
-      tell(W w){
-        return pair(unit, w);
-      }
-      template<typename T>
-      static auto
-      listen(T aw){
-        return pair(aw, aw.second);
-      }
 
-      template<typename T>
-      static auto
-      pass(T mx){
-        auto [xf, w] = mx;
-        auto [x, f] = xf;
-        return pair(x, f(w));
-      }
+    template<typename Log>
+    class LoggingContext : public Derive<ProtoLoggingContext<Log>, MixinMonadWriter>
+    {};
 
-    };
   } // end of anonymous namespace
 
   TEST(MonadWriter, pure)
