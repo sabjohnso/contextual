@@ -86,12 +86,14 @@ namespace Contextual::Details
   concept HasPureAndFlatMap = HasPure<Context> && HasFlatMap<Context>;
 
 
+  template<typename Context>
+  concept HasMonad = HasMonadUtility<Context>;
 
 
   /**
    * @brief Mixin monad core methods
    */
-  class MixinMonad : public Static_curried<MixinMonad, Nat<1>>
+  class MixinMonadCore : public Static_curried<MixinMonadCore, Nat<1>>
   {
 
     //  ___ __  __
@@ -271,7 +273,7 @@ namespace Contextual::Details
 
       }
     }
-  } constexpr mixinMonad{};
+  } constexpr mixinMonadCore{};
 
 
 
@@ -398,6 +400,23 @@ namespace Contextual::Details
   } constexpr mixinMonadUtility{};
 
 
+  class MixinMonad : public Static_curried<MixinMonad, Nat<1>>{
+  public:
+    template<HasMinimalMonad Base>
+    static constexpr auto
+    call(Type<Base>){
+      if constexpr (MissingMonadCore<Base>){
+        return call(mixinMonadCore(type<Base>));
+      } else if constexpr (MissingMonadUtility<Base>){
+        return call(mixinMonadUtility(type<Base>));
+      } else {
+        return type<Base>;
+        static_assert(HasMonad<Base>);
+      }
+    }
+  } constexpr mixinMonad{};
+
+
   class ProtoMonad : public Applicative
   {
 
@@ -443,7 +462,7 @@ namespace Contextual::Details
     static constexpr Flatten flatten{};
   }; // end of class ProtoMonad
 
-  class Monad : public Derive<ProtoMonad, MixinMonad, MixinMonadUtility>
+  class Monad : public Derive<ProtoMonad, MixinMonad>
   {
   public:
 

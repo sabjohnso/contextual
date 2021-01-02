@@ -10,26 +10,34 @@
 //
 #include <type_utility/type_utility.hpp>
 
+//
+// ... Contextual header files
+//
+#include <contextual/Monad.hpp>
+
 namespace Contextual::Instances
 {
 
-
-  class TypeContext
+  namespace TypeContextDetails
   {
-    template<typename T>
-    using Type = TypeUtility::Type<T>;
+    using std::result_of_t;
+    using TypeUtility::type;
 
-    template<typename T>
-    static constexpr auto type = TypeUtility::type<T>;
+    class ProtoTypeContext {
+    public:
+      static constexpr auto pure =
+        []<typename T>(T){ return type<t>; };
 
-  public:
-    static constexpr auto pure =
-      curry<1>([]<typename T>(T&& x){ return type<decay_t<T>>; });
+      static constexpr auto flatMap =
+        []<typename F, typename T>(F, Type<T>){ return result_of_t<F(T)>{}; };
 
-    static constexpr auto flatMap =
-      curry<2>([]<typename F, typename T>(F&&, Type<T>){
-          return type<std::decay_t<std::result_of_t<F(T)>>>;
-        });
-  };
+    }; // end of class ProtoTypeContext
 
+    /**
+     * @brief TypeContext is a monad context for type proxies
+     */
+    class TypeContext : public Derive<ProtoTypeContext, MixinMonad, MixinMonadUtility>
+    {}; // end of class TypeContext
+
+  } // end of namespace Details
 } // end of namespace Contextual::Instances

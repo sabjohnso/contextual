@@ -274,7 +274,7 @@ namespace Contextual::Details
     static constexpr auto
     call(Type<Base>){
       if constexpr (MissingMonadCore<Base>){
-        return call(mixinMonad(type<Base>));
+        return call(mixinMonadCore(type<Base>));
 
       } else if constexpr (MissingState<Base>){
 
