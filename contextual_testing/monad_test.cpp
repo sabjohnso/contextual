@@ -35,6 +35,7 @@ namespace Contextual::Details::Testing
     using std::result_of_t;
 
     using ListProcessing::Dynamic::Nil;
+    using ListProcessing::Dynamic::ListType;
     using ListProcessing::Dynamic::list;
 
     constexpr auto add = curry([](auto x, auto y){ return x+y; }, nat<2>);
@@ -49,64 +50,57 @@ namespace Contextual::Details::Testing
     constexpr auto letM    = Monad::letM;
 
 
-    constexpr
-    class IdentityMonad
-      : public Deriving<IdentityMonad, Monad::MonadicFlatMap, Monad::MonadicFApply>{
-    public:
 
-      template<typename F, typename T>
-      static constexpr auto
-      fMap(F&& f, T&& mx){ return f(mx); }
-
-      template<typename T>
-      static constexpr auto
-      pure(T&& x){ return x; }
-
-      template<typename T>
-      static constexpr auto
-      flatten(T&& mmx){ return mmx; }
-
-    } identityMonad{};
-
-    constexpr
-    class FunctionMonad
-      : public Deriving<FunctionMonad,Monad::MonadicFApply,Monad::MonadicFMap,Monad::MonadicFlatten>
+    class ProtoIdentityMonad
     {
     public:
+      static constexpr auto fMap = [](auto f, auto mx){ return f(mx); };
+      static constexpr auto pure = [](auto x){ return x; };
+      static constexpr auto flatten = [](auto mmx){ return mmx; };
+    };
 
-      template<typename T>
-      static constexpr auto
-      pure(T&& x){ return constant(forward<T>(x)); }
+    class IdentityMonad : public Derive<ProtoIdentityMonad, MixinMonad>
+    {} constexpr identityMonad{};
 
-      template<typename F, typename T>
-      static constexpr auto
-      flatMap(F&& f, T&& mx){ return [=](auto y){ return f(mx(y))(y); }; }
 
-    } functionMonad{};
-
-    constexpr
-    class ListMonad
-      : public Deriving<ListMonad,  Monad::MonadicFMap, Monad::MonadicFApply, Monad::MonadicFlatten>
+    class ProtoFunctionMonad
     {
     public:
+      static constexpr auto pure = [](auto x){ return [=](auto){ return x; };; };
+      static constexpr auto flatMap = [](auto f, auto mx){ return [=](auto e){ return f(mx(e))(e); }; };
+    };
 
-      template<typename T>
-      static constexpr auto
-      pure(T&& x){ return list(forward<T>(x)); }
+    class FunctionMonad : public Derive<ProtoFunctionMonad, MixinMonad>
+    {} constexpr functionMonad{};
 
-      template<typename F, typename T>
-      static constexpr auto
-      flatMap(F&& f, Nil){ return Nil{}; }
 
-      template<typename F, typename T, typename R = result_of_t<F(decltype(head(declval<T>())))>>
-      static constexpr R
-      flatMap(F&& f, T&& xs){
-        // using R = decay_t<decltype(f(head(xs)))>;
-        return hasData(xs)
-          ? append(f(head(xs)), flatMap(f, tail(xs)))
-          : R::nil;
-      }
-    }listMonad{};
+    class ProtoListMonad
+    {
+      class FlatMap: public Static_curried<FlatMap, Nat<2>> {
+      public:
+        template<typename F>
+        static Nil
+        call(F f, Nil){
+          return Nil{};
+        }
+
+        template<typename F, typename T, typename R = result_of_t<F(typename T::value_type)>>
+        static R
+        call(F f, T xs){
+          return hasData(xs)
+            ? append(f(head(xs)), call(f, tail(xs)))
+            : R::nil;
+        }
+      };
+    public:
+      static constexpr auto pure = [](auto x){ return list(x); };
+      static constexpr FlatMap flatMap{};
+
+      // static constexpr auto fMap = [](auto f, auto xs){ return map(f, xs); };
+    };
+
+    class ListMonad : public Derive<ProtoListMonad, MixinMonad>
+    {} constexpr listMonad{};
   } // end of anonymous namespace
 
   TEST(Monad, ReturnIdentity){

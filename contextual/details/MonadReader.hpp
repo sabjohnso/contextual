@@ -11,38 +11,186 @@
 namespace Contextual::Details
 {
 
-  class MonadReader : public Monad
+  template<typename Context>
+  concept HasAsk = requires{{Context::ask};};
+
+  template<typename Context>
+  concept MissingAsk = ! HasAsk<Context>;
+
+  template<typename Context>
+  concept HasLocal = requires{{Context::local};};
+
+  template<typename Context>
+  concept MissingLocal = ! HasLocal<Context>;
+
+  template<typename Context>
+  concept HasAsks = requires{{Context::asks};};
+
+  template<typename Context>
+  concept MissingAsks = ! HasAsks<Context>;
+
+  template<typename Context>
+  concept HasMinimalMonadReader =
+    (HasAsk<Context> || HasAsks<Context>) &&
+    HasLocal<Context>;
+
+  template<typename Context>
+  concept MissingMinimalMonadReader = ! HasMinimalMonadReader<Context>;
+
+
+  template<typename Context>
+  concept HasMonadReaderCore =
+    HasMonadCore<Context> &&
+    HasAsk<Context> &&
+    HasAsks<Context> &&
+    HasLocal<Context>;
+
+
+  template<typename Context>
+  concept MissingMonadReaderCore = ! HasMonadReaderCore<Context>;
+
+  template<typename Context>
+  concept HasMonadReaderUtility =
+    HasMonadUtility<Context> &&
+    HasMonadReaderCore<Context>;
+
+
+  template<typename Context>
+  concept MissingMonadReaderUtility = ! HasMonadReaderUtility<Context>;
+
+  template<typename Context>
+  concept HasFMapAndAsk = HasFMap<Context> && HasAsk<Context>;
+
+
+
+  class MixinMonadReader : public Static_curried<MixinMonadReader, Nat<1>>{
+
+    //    _       _
+    //   /_\   __| |__
+    //  / _ \ (_-< / /
+    // /_/ \_\/__/_\_\.
+    class MixinAsk : public Static_curried<MixinAsk, Nat<1>>
+    {
+      template<HasAsks Base>
+      class Result : public Base
+      {
+      public:
+        using Base::Base;
+        static constexpr auto ask = Base::asks(identity);
+      };
+
+    public:
+      template<HasAsks Base>
+      static constexpr auto call(Type<Base>)
+      {
+        return type<Result<Base>>;
+        static_assert(HasAsk<Result<Base>>);
+      }
+    } static constexpr mixinAsk{};
+
+    //    _       _
+    //   /_\   __| |__ ___
+    //  / _ \ (_-< / /(_-<
+    // /_/ \_\/__/_\_\/__/
+    class MixinAsks : public Static_curried<MixinAsks, Nat<1>>
+    {
+      template<HasFMapAndAsk Base>
+      class Result : public Base
+      {
+        class Asks : public Static_curried<Asks, Nat<1>>
+        {
+        public:
+          template<typename F>
+          static constexpr auto
+          call(F&& f){ return Base::fMap(forward<F>(f), Base::ask); }
+        };
+
+      public:
+        using Base::Base;
+        static constexpr Asks asks{};
+      };
+
+    public:
+      template<HasFMapAndAsk Base>
+
+      static constexpr auto
+      call(Type<Base>){
+        return type<Result<Base>>;
+        static_assert(HasAsks<Result<Base>>);
+      }
+    } static constexpr mixinAsks{};
+
+
+
+  public:
+    template<HasMinimalMonadReader Base>
+    static constexpr auto
+    call(Type<Base>){
+      if constexpr (MissingMonadCore<Base>){
+        return call(mixinMonad(type<Base>));
+
+      } else if constexpr (MissingAsk<Base>){
+        return call(mixinAsk(type<Base>));
+
+      } else if constexpr (MissingAsks<Base>){
+        return call(mixinAsks(type<Base>));
+
+      } else {
+        return type<Base>;
+        static_assert(HasMonadReaderCore<Base>);
+
+      }
+    }
+  } constexpr mixinMonadReader{};
+
+
+  class MixinMonadReaderUtility : public Static_curried<MixinMonadReaderUtility, Nat<1>>{
+  public:
+
+    template<HasMonadReaderCore Base>
+    static constexpr auto
+    call(Type<Base>){
+
+      if constexpr (MissingMonadUtility<Base>){
+        return call(mixinMonadUtility(type<Base>));
+
+      } else {
+        return type<Base>;
+        static_assert(HasMonadReaderUtility<Base>);
+
+      }
+    } // end of function call
+  } constexpr mixinMonadReaderUtility{};
+
+
+  class ProtoMonadReader : public Monad
   {
-  private:
+    class Local : public Static_curried<Local, Nat<2>>{
+     static constexpr auto askLocal =
+       asksC3([]<typename Context, typename F, typename T>
+              (Context, F&& f, T&& mx){
+                return Context::local(forward<F>(f), forward<T>(mx));
+              });
 
-    static constexpr auto askLocal =
-      asksC3(
-        []<typename Context, typename F, typename T>
-        (Context, F&& f, T&& mx){
-          return Context::local(forward<F>(f), forward<T>(mx));
-        });
-
-    class Local : public Static_curried<Local,Nat<2>>{
     public:
       template<typename F, typename T>
       static constexpr auto
       call(F&& f, T&& cmx){
+        // clang-format off
         return
-          letC(askLocal,    [=](auto local){ return
-          letC(injest(cmx), [=](auto  mx  ){ return
+          letC(askLocal, [=](auto local){ return
+          letC(injest(cmx), [=](auto mx){ return
                 returnC(local(f, mx)); }); });
       }
-    }; // end of class Local
+    };
   public:
+    constexpr static Local local{};
+    constexpr static auto ask = asksC([]<typename Context>(Context){ return Context::ask; });
+  };
 
-    static constexpr auto ask =
-      asksC([]<typename Context>(Context){ return Context::ask(); });
+  class MonadReader : public Derive<ProtoMonadReader, MixinMonadReader, MixinMonadReaderUtility>
+  {};
 
-    static constexpr auto asks =
-      []<typename F>(F&& f){ return fMap(forward<F>(f), ask); };
 
-    static constexpr Local local{};
-
-  }; // end of class MonadReader
 
 } // end of namespace Contextual::Details

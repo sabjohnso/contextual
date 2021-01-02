@@ -42,8 +42,8 @@ namespace Contextual::Details::Testing
 
 
 
-    constexpr auto mempty  = Monoid::mempty;
-    constexpr auto mappend = Monoid::mappend;
+    constexpr auto mEmpty  = Monoid::mEmpty;
+    constexpr auto mAppend = Monoid::mAppend;
 
     constexpr auto pure    = MonadRWS::pure;
     constexpr auto returnM = MonadRWS::returnM;
@@ -72,7 +72,7 @@ namespace Contextual::Details::Testing
     {
     public:
 
-      static constexpr Nil mempty{};
+      static constexpr Nil mEmpty{};
 
       template<typename List1, typename List2>
       static auto
@@ -127,7 +127,7 @@ namespace Contextual::Details::Testing
       static auto
       pure(T x){
         return [=](auto es){
-          return make_tuple(x, run(logContext, mempty), std::get<1>(es));
+          return make_tuple(x, run(logContext, mEmpty), std::get<1>(es));
         };
       }
 
@@ -137,7 +137,7 @@ namespace Contextual::Details::Testing
         return [=](auto es){
           auto [f, wf, sf] = run(es, mf);
           auto [x, wx, sx] = run(make_tuple(std::get<0>(es), sf), mx);
-          return make_tuple(f(x), run(logContext, mappend(wf, wx)), sx);
+          return make_tuple(f(x), run(logContext, mAppend(wf, wx)), sx);
         };
       }
 
@@ -150,12 +150,10 @@ namespace Contextual::Details::Testing
         };
       }
 
-      static constexpr auto
-      ask(){ return
-          [](auto es){
-            return make_tuple(std::get<0>(es), run(logContext, mempty), std::get<1>(es));
-          };
-      }
+      static constexpr auto ask = [](auto es){
+        return make_tuple(std::get<0>(es), run(logContext, mEmpty), std::get<1>(es));
+      };
+
 
       template<typename F, typename T>
       static constexpr auto
@@ -203,7 +201,7 @@ namespace Contextual::Details::Testing
       static constexpr auto
       put(S s){
         return [=](auto){
-          return make_tuple(unit, run(logContext, mempty), s);
+          return make_tuple(unit, run(logContext, mEmpty), s);
         };
       }
     };

@@ -32,8 +32,7 @@ namespace Contextual::Details
         return Context::pass(forward<Pair>(maf));
       });
 
-    class Tell : public Static_curried<Tell, Nat<1>>
-    {
+    class Tell : public Static_curried<Tell, Nat<1>>{
     public:
       template<typename W>
       static constexpr auto

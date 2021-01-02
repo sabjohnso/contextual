@@ -16,6 +16,7 @@
 //
 // ... Contextual header files
 //
+#include <contextual/details/import.hpp>
 #include <contextual/details/Deriving.hpp>
 #include <contextual/details/MonadPlus.hpp>
 
@@ -27,44 +28,35 @@ namespace Contextual::Details::Testing
 
     using ListProcessing::Dynamic::nil;
     using ListProcessing::Dynamic::list;
+    using ListProcessing::Dynamic::ListType;
 
-    template<typename T>
-    constexpr auto mZero = MonadPlus::mZero<T>;
+    constexpr auto pure  = MonadPlus::pure;
+    constexpr auto mZero = MonadPlus::mZero;
     constexpr auto mPlus = MonadPlus::mPlus;
 
-    constexpr
-    class ListContext : Deriving<
-      ListContext,
-      MonadPlus::MonadicFMap,
-      MonadPlus::MonadicFApply,
-      MonadPlus::MonadicFlatten
-      >{
+    class ProtoListContext{
+      static constexpr auto u = [](auto f){ return f(f); };
     public:
+      static constexpr auto mZero = []<typename T>(Type<T>){ return nil<T>; };
+      static constexpr auto mPlus = [](auto xs, auto ys){ return append(xs, ys); };
+      static constexpr auto pure = [](auto x){ return list(x); };
+      static constexpr auto flatMap =
+        u(curry<3>([](auto rec, auto f, auto xs) -> decltype(f(head(xs))) {
+          using R = decltype(f(head(xs)));
+          return hasData(xs)
+            ? rec(rec)(f, append(f(head(xs)),tail(xs)))
+            : R::nil; }));
 
-      template<typename T>
-      static auto
-      fail(){ return nil<T>; }
+    }; // end of class ProtoListContext
 
-      template<typename List1, typename List2>
-      static auto
-      mPlus(List1 xs, List2 ys){ return append(xs, ys); }
-
-      template<typename T>
-      static auto
-      pure(T x){ return list(x); }
-
-      template<typename F, typename List, typename Result = result_of_t<F(typename List::value_type)>>
-      static Result
-      flatMap(F f, List xs){
-        return hasData(xs)
-          ? mplus(f(head(xs)), flatMap(f, tail(xs)))
-          : Result::nil;
-      }
-
-
-    } listContext{};
+    class ListContext : public Derive<ProtoListContext, MixinMonadPlus>
+    {} constexpr listContext{};
 
   } // end of anonymous namespace
+
+  TEST(MonadPlus, ListPure){
+    EXPECT_EQ(run(listContext, pure(3)), list(3));
+  }
 
   TEST(MonadPlus, ListMPlus){
     EXPECT_EQ(
@@ -76,13 +68,14 @@ namespace Contextual::Details::Testing
   TEST(MonadPlus, ListMPlusMZero){
     EXPECT_EQ(
       run(listContext)(
-        mPlus(list(1, 2), mZero<int>)),
+        mPlus(list(1, 2), mZero(type<int>))),
       list(1, 2));
   }
 
   TEST(MonadPlus, ListMPlusMzeroCommutes){
     EXPECT_EQ(
-      run(listContext, mPlus(list(1, 2), mZero<int>)),
-      run(listContext, mPlus(mZero<int>, list(1, 2))));
+      run(listContext, mPlus(list(1, 2), mZero(type<int>))),
+      run(listContext, mPlus(mZero(type<int>), list(1, 2))));
   }
+
 } // end of namespace Contextual::Details::Testing

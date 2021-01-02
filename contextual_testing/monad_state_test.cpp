@@ -57,55 +57,41 @@ namespace Contextual::Details::Testing
   } // end of namespace // anonymous
 
 
-
   template<typename S>
-  class StateContext
-    : public Deriving<
-    StateContext<S>,
-    MonadicFApply,
-    MonadicFlatten
-    >
-  {
+  class ProtoStateContext {
   public:
 
     template<typename T>
     using Stateful = function<pair<T,S>(S)>;
 
-    template<typename T>
-    static Stateful<T>
-    pure(T x){ return [=](S s){ return pair(x, s); }; }
-
-    template<typename F, typename T, typename R = result_of_t<F(T)>>
-    static Stateful<R>
-    fMap(F f, Stateful<T> mx){
-      return [=](S s){
-        auto [x, snew] = mx(s);
-        return pair(f(x), snew);
-      };
-    }
-
-    template<typename F, typename T, typename R = result_of_t<F(T)>>
-    static auto
-    flatMap(F f, Stateful<T> mx){
-      return [=](S s){
+    static constexpr auto pure = []<typename T>(T x){ return Stateful<T>([=](S s){ return pair(x, s); }); };
+    static constexpr auto flatMap = []<typename F, typename T>(F f, Stateful<T> mx){
+      using R = result_of_t<F(T)>;
+      return R{[=](S s){
         auto [x, snew] = run(s, mx);
         return run(snew, f(x));
-      };
-    }
+      }};
+    };
+    static constexpr auto state = []<typename F>(F f){
+      using R = result_of_t<F(S)>;
+      return function<R(S)>(f);
+    };
 
-    static Stateful<Unit>
-    put(S s){
-      return [=](S){ return pair(unit, s); };
-    }
+    static const Stateful<S> get;
 
-    static Stateful<S> get;
   };
+  template<typename S>
+  typename ProtoStateContext<S>::template Stateful<S>
+  const ProtoStateContext<S>::get = [](S s){ return pair(s, s); };
+
 
   template<typename S>
-  typename StateContext<S>::Stateful<S> StateContext<S>::get([](S s){ return pair(s,s); });
+  class StateContext : public Derive<ProtoStateContext<S>, MixinMonadState>
+  {};
 
   template<typename S>
-  StateContext<S> stateContext{};
+  static constexpr StateContext<S> stateContext{};
+
 
 
   TEST(MonadState, Pure){

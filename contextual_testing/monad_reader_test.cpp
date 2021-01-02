@@ -25,35 +25,25 @@ namespace Contextual::Details::Testing
     constexpr auto asks  = MonadReader::asks;
     constexpr auto local = MonadReader::local;
 
-    constexpr
-    class FunctionContext : public Deriving<
-      FunctionContext,
-      MonadReader::MonadicFMap,
-      MonadReader::MonadicFApply,
-      MonadReader::MonadicFlatten
-      >
+    class ProtoFunctionContext
     {
     public:
 
-      template<typename T>
-      static constexpr auto
-      pure(T x){ return constant(x); }
+      static constexpr auto ask = identity;
+      static constexpr auto pure = constant;
+      static constexpr auto flatMap =
+        curry<3>([](auto f, auto mx, auto e){
+          return f(mx(e))(e);
+        });
 
-      template<typename F, typename T>
-      static constexpr auto
-      flatMap(F f, T mx){
-        return [=](auto e){ return f(mx(e))(e); };
-      }
+      static constexpr auto local =
+        curry<3>([](auto f, auto mx, auto e){
+          return mx(f(e));
+        });
+    };
 
-      static constexpr auto
-      ask(){ return identity; }
-
-      template<typename F, typename T>
-      static constexpr auto
-      local(F f, T mx){
-        return [=](auto env){ return mx(f(env)); };
-      }
-    } functionContext{};
+    class FunctionContext : public Derive<ProtoFunctionContext, MixinMonadReader>
+    {} constexpr functionContext{};
 
   } // end of anonymous namespace
 

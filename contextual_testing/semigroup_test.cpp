@@ -1,4 +1,8 @@
 //
+// ... Standard header files
+//
+#include <functional>
+//
 // ... Testing header files
 //
 #include <gtest/gtest.h>
@@ -20,32 +24,52 @@ namespace Contextual::Details::Testing
 {
   namespace // anonymous
   {
+    using std::plus;
+    using std::multiplies;
+
     using ListProcessing::Dynamic::list;
     constexpr auto op = Semigroup::op;
     constexpr auto op_ = Semigroup::op_;
 
-    class Addition {
+    class ProtoAddition {
     public:
-      template<typename T, typename U>
-      static constexpr auto
-      op(T&& x, U&& y){ return forward<T>(x) + forward<U>(y); }
-    } addition{};
+      static constexpr auto op = curry<2>(plus{});
+    };
 
-    constexpr
-    class Multiplication {
-    public:
-      template<typename T, typename U>
-      static constexpr auto
-      op(T&& x, U&& y){ return forward<T>(x) * forward<U>(y); }
-    } multiplication{};
+    class Addition : public Derive<ProtoAddition, MixinSemigroup>
+    {} constexpr addition{};
 
-    constexpr
-    class Append {
+
+
+    class ProtoMultiplication {
     public:
-      template<typename T, typename U>
-      static constexpr auto
-      op(T&& x, U&& y){ return append(forward<T>(x), forward<U>(y)); }
-    } appendSemigroup{};
+      static constexpr auto op = curry<2>(multiplies{});
+    };
+
+    class Multiplication : public Derive<ProtoMultiplication, MixinSemigroup>
+    {} constexpr multiplication{};
+
+
+
+    class ProtoAppend {
+      class Op_ : public Static_callable<Op_>{
+      public:
+        template<typename T, typename U, typename ... Vs>
+        static constexpr auto
+        call(T&& x, U&& y, Vs&& ... zs){
+          if constexpr (count_types<Vs...>() == 0){
+            return append(forward<T>(x), forward<U>(y));
+          } else {
+            return call(append(forward<T>(x), forward<T>(y)), forward<Vs>(zs) ...);
+          }
+        }
+      };
+    public:
+      static constexpr Op_ op_{};
+    };
+
+    class Append : public Derive<ProtoAppend, MixinSemigroup>
+    {} constexpr appendSemigroup{};
 
   } // end of anonymous namespace
 

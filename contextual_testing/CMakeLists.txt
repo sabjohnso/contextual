@@ -10,6 +10,7 @@ macro(contextual_add_test test_name exe_name)
   add_test(${test_name} ${exe_name})
 endmacro()
 
+contextual_add_test(derive derive_test derive_test.cpp)
 contextual_add_test(contextual contextual_test contextual_test.cpp)
 contextual_add_test(magma magma_test magma_test.cpp)
 contextual_add_test(semigroup semigroup_test semigroup_test.cpp)

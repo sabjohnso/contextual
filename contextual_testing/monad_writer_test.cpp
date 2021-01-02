@@ -32,8 +32,8 @@ namespace Contextual::Details::Testing
     using ListProcessing::Dynamic::Nil;
     using ListProcessing::Dynamic::list;
 
-    constexpr auto mempty = Monoid::mempty;
-    constexpr auto mappend = Monoid::mappend;
+    constexpr auto mEmpty = Monoid::mEmpty;
+    constexpr auto mAppend = Monoid::mAppend;
 
     constexpr auto pure = MonadWriter::pure;
     constexpr auto writer = MonadWriter::writer;
@@ -48,7 +48,7 @@ namespace Contextual::Details::Testing
 
     class ListMonoid {
     public:
-      static constexpr auto mempty = Nil{};
+      static constexpr auto mEmpty = Nil{};
 
       template<typename List>
       static constexpr auto
@@ -78,7 +78,7 @@ namespace Contextual::Details::Testing
       template<typename T>
       static auto
       pure(T x){
-        return pair(x, run(logContext, mempty));
+        return pair(x, run(logContext, mEmpty));
       }
 
       template<typename F, typename T>
@@ -91,13 +91,13 @@ namespace Contextual::Details::Testing
       static auto
       flatMap(F f, T mx){
         auto [y, w] = f(mx.first);
-        return pair(y, run(logContext, mappend(w, mx.second)));
+        return pair(y, run(logContext, mAppend(w, mx.second)));
       }
 
       template<typename T>
       static auto
       flatten(T mmx){
-        return pair(mmx.first.first,run(logContext, mappend(mmx.first.second, mmx.second)));
+        return pair(mmx.first.first,run(logContext, mAppend(mmx.first.second, mmx.second)));
       }
 
       template<typename T>
@@ -158,7 +158,7 @@ namespace Contextual::Details::Testing
       run(LoggingContext<ListMonoid>{})(
         pass(beginM(
                tell(list(string("This is the log"))),
-               returnM(pair(3, [](auto log){ return run(ListMonoid{}, mappend(log, log)); }))))),
+               returnM(pair(3, [](auto log){ return run(ListMonoid{}, mAppend(log, log)); }))))),
       pair(3,list(string("This is the log"), string("This is the log"))));
   }
 

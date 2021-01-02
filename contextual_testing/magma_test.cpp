@@ -1,4 +1,9 @@
 //
+// ... Standard header files
+//
+#include <functional>
+
+//
 // ... Testing header files
 //
 #include <gtest/gtest.h>
@@ -20,31 +25,32 @@ namespace Contextual::Details::Testing
 {
   namespace // anonymous
   {
+    using std::plus;
+    using std::multiplies;
+
     using ListProcessing::Dynamic::list;
     constexpr auto op = Magma::op;
 
     class Addition {
     public:
-      template<typename T, typename U>
-      static constexpr auto
-      op(T&& x, U&& y){ return forward<T>(x) + forward<U>(y); }
+      static constexpr auto op = curry<2>(plus{});
     } addition{};
+    static_assert(HasMagma<Addition>);
+
 
     constexpr
     class Multiplication {
     public:
-      template<typename T, typename U>
-      static constexpr auto
-      op(T&& x, U&& y){ return forward<T>(x) * forward<U>(y); }
+      static constexpr auto op = curry<2>(multiplies{});
     } multiplication{};
+    static_assert(HasMagma<Multiplication>);
 
     constexpr
     class Append {
     public:
-      template<typename T, typename U>
-      static constexpr auto
-      op(T&& x, U&& y){ return append(forward<T>(x), forward<U>(y)); }
+      static constexpr auto op = curry<2>([](auto x, auto y){ return append(x, y); });
     } appendMagma{};
+    static_assert(HasMagma<Append>);
 
   } // end of anonymous namespace
 
@@ -62,6 +68,5 @@ namespace Contextual::Details::Testing
         op(list(1,2), list(3,4))),
       list(1, 2, 3, 4));
   }
-
 
 } // end of namespace Contextual::Details::Testing

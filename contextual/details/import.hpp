@@ -36,6 +36,8 @@ namespace Contextual::Details
   using TypeUtility::Nat;
   using TypeUtility::nat;
   using TypeUtility::count_types;
+  using TypeUtility::Type;
+  using TypeUtility::type;
 
   using FunctionUtility::curry;
   using FunctionUtility::compose;

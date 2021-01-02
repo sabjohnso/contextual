@@ -39,7 +39,7 @@ namespace Contextual::Details::Testing
     public:
       template<typename F, typename T>
       static constexpr auto
-      fMap(F&& f, T&& x){ return forward<F>(f)(forward<T>(x)); }
+      fMap(F&& f, T&& mx){ return forward<F>(f)(forward<T>(mx)); }
     } identityFunctor{};
 
     constexpr
