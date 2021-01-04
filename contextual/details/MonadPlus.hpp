@@ -36,11 +36,26 @@ namespace Contextual::Details
     HasMPlus<Context>;
 
   template<typename Context>
+  concept MissingMonadPlusCore = ! HasMonadPlusCore<Context>;
+
+  template<typename Context>
   concept HasMonadPlusUtility =
     HasMonadUtility<Context> &&
     HasMonadPlusCore<Context>;
 
-  class MixinMonadPlus : public Static_curried<MixinMonadPlus, Nat<1>>
+  template<typename Context>
+  concept MissingMonadPlusUtility = ! HasMonadPlusUtility<Context>;
+
+  template<typename Context>
+  concept HasMonadPlus =
+    HasMonadPlusCore<Context> &&
+    HasMonadPlusUtility<Context>;
+
+  template<typename Context>
+  concept MissingMonadPlus = ! HasMonadPlus<Context>;
+
+
+  class MixinMonadPlusCore : public Static_curried<MixinMonadPlusCore, Nat<1>>
   {
 
     //  __  __ ____
@@ -104,7 +119,7 @@ namespace Contextual::Details
       }
     }
 
-  };
+  } constexpr mixinMonadPlusCore{};
 
   class MixinMonadPlusUtility : public Static_curried<MixinMonadPlusUtility, Nat<1>>{
   public:
@@ -118,7 +133,25 @@ namespace Contextual::Details
         static_assert(HasMonadPlusUtility<Base>);
       }
     }
-  };
+  } constexpr mixinMonadPlusUtility{};
+
+  class MixinMonadPlus : public Static_curried<MixinMonadPlus, Nat<1>>{
+  public:
+    template<HasMinimalMonadPlus Base>
+    static constexpr auto
+    call(Type<Base>){
+
+      if constexpr (MissingMonadPlusCore<Base>){
+        return call(mixinMonadPlusCore(type<Base>));
+
+      } else if constexpr (MissingMonadPlusUtility<Base>) {
+        return call(mixinMonadPlusUtility(type<Base>));
+
+      } else {
+        return type<Base>;
+      }
+    }
+  } constexpr mixinMonadPlus{};
 
   class ProtoMonadPlus : public MonadFail
   {
