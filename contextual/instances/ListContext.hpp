@@ -37,8 +37,11 @@ namespace Contextual::Instances
     using ListProcessing::Dynamic::Nil;
     using ListProcessing::Dynamic::ListType;
 
+    /**
+     * @brief Implementation of the methods required for the definition of
+     * a context for lists with the monad and monoid methods.
+     */
     class ProtoListContext{
-
       class FMap : public Static_curried<FMap, Nat<2>>{
       public:
         template<typename F, typename T>
@@ -49,6 +52,9 @@ namespace Contextual::Instances
 
       }; // end of class FMap
 
+      /**
+       * @brief Return a single element list containing the input value
+       */
       class Pure : public Static_curried<Pure, Nat<1>> {
       public:
         template<typename T>
@@ -56,26 +62,23 @@ namespace Contextual::Instances
         call(T&& x){ return list(forward<T>(x)); }
       }; // end of class Pure
 
-
+      /**
+       * @brief Return a list containing the results of mapping each of the
+       * functions in the input function list (`fs`) over the values in the
+       * input value list (`xs`).
+       */
       class FApply : public Static_curried<FApply, Nat<2>> {
       public:
         template<typename F, typename T>
         static auto
-        call(F fs, T xs){
-          using Result = ListType<decltype(head(fs)(head(xs)))>;
-          return aux(fs, xs, Result::nil);
-        }
-      private:
-        template<typename F, typename T, typename Result>
-        static Result
-        aux(F fs, T xs, Result accum){
-          return hasData(fs)
-            ? aux(tail(fs), xs, rappend(map(head(fs), xs), accum))
-            : reverse(accum);
-        }
+        call(F fs, T xs){ return aMap(fs, xs); }
       }; // end of class FApply
 
-
+      /**
+       * @brief Given a function that accepts a value and returns a list and a
+       * list of values, return a list of values concisting of the flattened
+       * results of mapping the function over the values.
+       */
       class FlatMap : public Static_curried<FlatMap, Nat<2>>{
       public:
         template<typename F, typename T>
@@ -83,21 +86,23 @@ namespace Contextual::Instances
         call(F&& f, T xs){  return mMap(forward<F>(f), xs); }
       }; // end of class FlatMap
 
+      /**
+       * @brief Given a list of lists, return a flattened list.
+       */
       class Flatten : public Static_curried<Flatten, Nat<1>>{
       public:
         template<typename T, typename R = typename T::value_type>
         static R
         call(T xss){
-          return aux(xss, R::nil);
+          return R(aux(xss, R::nil));
         }
-
       private:
         template<typename T, typename R>
-        static R
+        static Trampoline<R>
         aux(T xss, R accum){
           return hasData(xss)
-            ? aux(tail(xss), rappend(head(xss), accum))
-            : reverse(accum);
+            ? Trampoline<R>([=]{ return aux(tail(xss), rappend(head(xss), accum)); })
+            : Trampoline<R>(reverse(accum));
         }
       }; // end of class Flatten
 
@@ -119,6 +124,9 @@ namespace Contextual::Instances
   } // end of namespace ListContextDetails
 
 
+  /**
+   * @brief A Context for Lists  that contains the MonadPlus and Monoid methods
+   */
   class ListContext : public Derive<ListContextDetails::ProtoListContext, MixinMonadPlus, MixinMonoid>
   {};
 
