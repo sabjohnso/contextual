@@ -83,8 +83,8 @@ namespace Contextual::Details
     operator ()(Context &&) const& { return base::value(); }
 
     template<typename Context>
-    constexpr const_reference
-    operator ()(Context &&) && { return base::value(); }
+    constexpr rvalue_reference
+    operator ()(Context &&) && { return static_cast<base&&>(*this).value(); }
 
   }; // end of class ContextualReturn
 

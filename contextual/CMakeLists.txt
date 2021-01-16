@@ -18,4 +18,16 @@ install(TARGETS contextual_header
 
 install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/config.hpp
+  Monad.hpp
+  Derive.hpp
+  MonadPlus.hpp
+  Monoid.hpp
+  Run.hpp
+  Unit.hpp
   DESTINATION ${contextual_INSTALL_INCLUDEDIR}/contextual)
+
+install(DIRECTORY
+  details
+  instances
+  DESTINATION ${contextual_INSTALL_INCLUDEDIR}/contextual
+  FILES_MATCHING PATTERN "*.hpp")

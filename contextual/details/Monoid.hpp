@@ -38,6 +38,7 @@ namespace Contextual::Details
      HasMAppend<Context> ||
      HasMAppend_<Context>);
 
+
   template<typename Context>
   concept MissingMinimalMonoid = ! HasMinimalMonoid<Context>;
 
@@ -46,6 +47,9 @@ namespace Contextual::Details
     HasSemigroup<Context> &&
     HasMAppend<Context> &&
     HasMAppend_<Context>;
+
+  template<typename Context>
+  concept MissingMonoid = ! HasMonoid<Context>;
 
   class MixinMonoid : public Static_curried<MixinMonoid, Nat<1>>{
     //  __  __   _                          _
@@ -243,7 +247,6 @@ namespace Contextual::Details
           return call(mixinMAppendFromOp(type<Base>));
 
         }
-
       } else if constexpr (MissingMAppend_<Base>){
         return call(mixinMAppend_(type<Base>));
 

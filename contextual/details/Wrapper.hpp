@@ -23,13 +23,13 @@ namespace Contextual::Details
     Wrapper(rvalue_reference input) : value_(move(input)){}
 
 
-  protected:
-
-    const_reference
+    constexpr const_reference
     value() const& {return value_;}
 
-    rvalue_reference
+    constexpr rvalue_reference
     value() && {return move(value_);}
+
+  protected:
 
     ~Wrapper() = default;
 

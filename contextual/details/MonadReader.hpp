@@ -58,13 +58,23 @@ namespace Contextual::Details
   template<typename Context>
   concept MissingMonadReaderUtility = ! HasMonadReaderUtility<Context>;
 
+
+  template<typename Concept>
+  concept HasMonadReader =
+    HasMonadReaderCore<Concept> &&
+    HasMonadReaderUtility<Concept>;
+
+  template<typename Context>
+  concept MissingMonadReader = ! HasMonadReader<Context>;
+
   template<typename Context>
   concept HasFMapAndAsk = HasFMap<Context> && HasAsk<Context>;
 
 
 
-  class MixinMonadReader : public Static_curried<MixinMonadReader, Nat<1>>{
 
+
+  class MixinMonadReaderCore : public Static_curried<MixinMonadReaderCore, Nat<1>>{
     //    _       _
     //   /_\   __| |__
     //  / _ \ (_-< / /
@@ -141,7 +151,7 @@ namespace Contextual::Details
 
       }
     }
-  } constexpr mixinMonadReader{};
+  } constexpr mixinMonadReaderCore{};
 
 
   class MixinMonadReaderUtility : public Static_curried<MixinMonadReaderUtility, Nat<1>>{
@@ -161,6 +171,25 @@ namespace Contextual::Details
       }
     } // end of function call
   } constexpr mixinMonadReaderUtility{};
+
+  class MixinMonadReader : public Static_curried<MixinMonadReader, Nat<1>>{
+  public:
+    template<HasMinimalMonadReader Base>
+    static auto
+    call(Type<Base>){
+
+      if constexpr (MissingMonadReaderCore<Base>){
+        return call(mixinMonadReaderCore(type<Base>));
+
+      } else if constexpr (MissingMonadReaderUtility<Base>){
+        return call(mixinMonadReaderUtility(type<Base>));
+
+      } else {
+        return type<Base>;
+        static_assert(HasMonadReader<Base>);
+      }
+    }
+  } constexpr mixinMonadReader{};
 
 
   class ProtoMonadReader : public Monad
@@ -188,9 +217,6 @@ namespace Contextual::Details
     constexpr static auto ask = asksC([]<typename Context>(Context){ return Context::ask; });
   };
 
-  class MonadReader : public Derive<ProtoMonadReader, MixinMonadReader, MixinMonadReaderUtility>
+  class MonadReader : public Derive<ProtoMonadReader, MixinMonadReader>
   {};
-
-
-
 } // end of namespace Contextual::Details
