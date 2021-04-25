@@ -21,36 +21,36 @@ namespace Contextual::Instances::Testing
 
   TEST(CTStringContext, MEmpty){
     using namespace Contextual::Instances::CTStringContextNS;
-    STATIC_EXPECT_EQ(mEmpty, CTSTRING_HOIST(""));
+    STATIC_EXPECT_EQ(mEmpty, HOIST_STRING(""));
   }
 
   TEST(CTStringContext, GenericMEmpty){
     constexpr auto mEmpty = Contextual::Monoid::mEmpty;
     STATIC_EXPECT_EQ(
       run(CTStringContext(), mEmpty),
-      CTSTRING_HOIST(""));
+      HOIST_STRING(""));
   }
 
   TEST(CTStringContext, MAppend){
     using namespace Contextual::Instances::CTStringContextNS;
     STATIC_EXPECT_EQ(
-      mAppend(CTSTRING_HOIST("abc"), CTSTRING_HOIST("123")),
-      CTSTRING_HOIST("abc123"));
+      mAppend(HOIST_STRING("abc"), HOIST_STRING("123")),
+      HOIST_STRING("abc123"));
   }
 
   TEST(CTStringContext, GenericMAppend){
     constexpr auto mAppend = Contextual::Monoid::mAppend;
     STATIC_EXPECT_EQ(
       run(CTStringContext())(
-        mAppend(CTSTRING_HOIST("abc"), CTSTRING_HOIST("123"))),
-      CTSTRING_HOIST("abc123"));
+        mAppend(HOIST_STRING("abc"), HOIST_STRING("123"))),
+      HOIST_STRING("abc123"));
   }
 
   TEST(CTStringContext, MAppendMEmpty){
     using namespace Contextual::Instances::CTStringContextNS;
     STATIC_EXPECT_EQ(
-      mAppend(CTSTRING_HOIST("abc"), mEmpty),
-      CTSTRING_HOIST("abc"));
+      mAppend(HOIST_STRING("abc"), mEmpty),
+      HOIST_STRING("abc"));
   }
 
   TEST(CTStringContext, GenericMAppendMEmpty){
@@ -58,15 +58,15 @@ namespace Contextual::Instances::Testing
     constexpr auto mEmpty = Contextual::Monoid::mEmpty;
     using namespace Contextual::Instances::CTStringContextNS;
     STATIC_EXPECT_EQ(
-      run(CTStringContext{}, mAppend(CTSTRING_HOIST("abc"), mEmpty)),
-      CTSTRING_HOIST("abc"));
+      run(CTStringContext{}, mAppend(HOIST_STRING("abc"), mEmpty)),
+      HOIST_STRING("abc"));
   }
 
   TEST(CTStringContext, MEmptyMAppend){
     using namespace Contextual::Instances::CTStringContextNS;
     STATIC_EXPECT_EQ(
-      mAppend(mEmpty, CTSTRING_HOIST("abc")),
-      CTSTRING_HOIST("abc"));
+      mAppend(mEmpty, HOIST_STRING("abc")),
+      HOIST_STRING("abc"));
   }
 
   TEST(CTStringContext, GenericMEmptyMAppend){
@@ -74,7 +74,7 @@ namespace Contextual::Instances::Testing
     constexpr auto mEmpty = Contextual::Monoid::mEmpty;
     using namespace Contextual::Instances::CTStringContextNS;
     STATIC_EXPECT_EQ(
-      run(CTStringContext{}, mAppend(mEmpty, CTSTRING_HOIST("abc"))),
-      CTSTRING_HOIST("abc"));
+      run(CTStringContext{}, mAppend(mEmpty, HOIST_STRING("abc"))),
+      HOIST_STRING("abc"));
   }
 } // end of namespace Contextual::Instances::Testing

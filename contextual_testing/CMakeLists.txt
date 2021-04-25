@@ -6,6 +6,7 @@ macro(contextual_add_test test_name exe_name)
     contextual::header
     type_utility::type_utility
     list_processing::header
+    ctstring::header
     GTest::gtest_main)
   add_test(${test_name} ${exe_name})
 endmacro()
