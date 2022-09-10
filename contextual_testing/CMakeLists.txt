@@ -8,6 +8,9 @@ macro(contextual_add_test test_name exe_name)
     list_processing::header
     ctstring::header
     GTest::gtest_main)
+  set_target_properties(${exe_name}
+    PROPERTIES
+    CXX_STANDARD ${contextual_CXX_STANDARD})
   add_test(${test_name} ${exe_name})
 endmacro()
 

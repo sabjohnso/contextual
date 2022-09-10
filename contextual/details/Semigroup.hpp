@@ -3,49 +3,57 @@
 //
 // ... Contextual header files
 //
-#include <contextual/details/import.hpp>
 #include <contextual/details/Contextual.hpp>
 #include <contextual/details/Magma.hpp>
+#include <contextual/details/import.hpp>
 
-namespace Contextual::Details
-{
-
-  template<typename Context>
-  concept HasOp_ = requires{{Context::op_};};
+namespace Contextual::Details {
 
   template<typename Context>
-  concept MissingOp_ = ! HasOp_<Context>;
+  concept HasOp_ = requires
+  {
+    {Context::op_};
+  };
+
+  template<typename Context>
+  concept MissingOp_ = !HasOp_<Context>;
 
   template<typename Context>
   concept HasMinimalSemigroup = HasMinimalMagma<Context> || HasOp_<Context>;
 
   template<typename Context>
-  concept MissingMinimalSemigroup = ! HasMinimalSemigroup<Context>;
+  concept MissingMinimalSemigroup = !HasMinimalSemigroup<Context>;
 
   template<typename Context>
   concept HasSemigroup = HasMagma<Context> && HasOp_<Context>;
 
   template<typename Context>
-  concept MissingSemigroup = ! HasSemigroup<Context>;
+  concept MissingSemigroup = !HasSemigroup<Context>;
 
-  class MixinSemigroup : public Static_curried<MixinSemigroup, Nat<1>>{
+  class MixinSemigroup : public Static_curried<MixinSemigroup, Nat<1>>
+  {
 
     //   ___
     //  / _ \ _ __
-    // | (_) | '_ \
+    // | (_) | '_ \.
     //  \___/| .__/
     //       |_|
-    class MixinOp : public Static_curried<MixinOp, Nat<1>>{
+    class MixinOp : public Static_curried<MixinOp, Nat<1>>
+    {
       template<HasOp_ Base>
-      class Result : public Base{
-        class Op : public Static_curried<Op, Nat<2>>{
+      class Result : public Base
+      {
+        class Op : public Static_curried<Op, Nat<2>>
+        {
         public:
           template<typename T, typename U>
           static constexpr auto
-          call(T&& x, U&& y){
+          call(T&& x, U&& y)
+          {
             return Base::op_(forward<T>(x), forward<U>(y));
           }
         };
+
       public:
         using Base::Base;
         static constexpr Op op{};
@@ -53,7 +61,8 @@ namespace Contextual::Details
     public:
       template<HasOp_ Base>
       static constexpr auto
-      call(Type<Base>){
+      call(Type<Base>)
+      {
         return type<Result<Base>>;
         static_assert(HasOp<Result<Base>>);
       }
@@ -61,7 +70,7 @@ namespace Contextual::Details
 
     //   ___
     //  / _ \ _ __
-    // | (_) | '_ \
+    // | (_) | '_ \.
     //  \___/| .__/__
     //       |_| |___|
     class MixinOp_ : public Static_curried<MixinOp_, Nat<1>>
@@ -72,13 +81,14 @@ namespace Contextual::Details
         class Op_ : public Static_callable<Op_>
         {
         public:
-          template<typename T, typename U, typename ... Vs>
+          template<typename T, typename U, typename... Vs>
           static constexpr auto
-          call(T&& x, U&& y, Vs&& ... zs){
-            if constexpr (count_types<Vs...>() == 0){
+          call(T&& x, U&& y, Vs&&... zs)
+          {
+            if constexpr (count_types<Vs...>() == 0) {
               return Base::op(x, y);
             } else {
-              return call(Base::op(x, y), zs ...);
+              return call(Base::op(x, y), zs...);
             }
           }
         };
@@ -91,7 +101,8 @@ namespace Contextual::Details
     public:
       template<HasOp Base>
       static constexpr auto
-      call(Type<Base>){
+      call(Type<Base>)
+      {
         return type<Result<Base>>;
         static_assert(HasOp_<Result<Base>>);
       }
@@ -102,20 +113,20 @@ namespace Contextual::Details
   public:
     template<HasMinimalSemigroup Base>
     static constexpr auto
-    call(Type<Base>){
-      if constexpr (MissingOp<Base>){
+    call(Type<Base>)
+    {
+      if constexpr (MissingOp<Base>) {
         return call(mixinOp(type<Base>));
 
       } else if constexpr (MissingOp_<Base>) {
         return call(mixinOp_(type<Base>));
 
-      } else if constexpr (MissingMagma<Base>){
+      } else if constexpr (MissingMagma<Base>) {
         return call(mixinMagma(type<Base>));
 
       } else {
         return type<Base>;
         static_assert(HasSemigroup<Base>);
-
       }
     }
   } constexpr mixinSemigroup{};

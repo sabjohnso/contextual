@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 project(contextual VERSION 0.1.0 LANGUAGES C CXX)
 
 option(contextual_BUILD_TESTING "Build the contextual tests" ON)
+set(contextual_CXX_STANDARD 20 CACHE STRING "C++ standard for contextual")
 
 include(GNUInstallDirs)
 set(contextual_INSTALL_BINDIR ${CMAKE_INSTALL_BINDIR})
@@ -30,11 +31,3 @@ install(EXPORT contextual_EXPORTS
 configure_file(contextual-config.cmake.in contextual-config.cmake)
 install(FILES ${PROJECT_BINARY_DIR}/contextual-config.cmake
   DESTINATION ${contextual_INSTALL_CONFDIR})
-
-
-
-
-
-
-
-
