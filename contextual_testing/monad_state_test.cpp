@@ -66,14 +66,14 @@ namespace Contextual::Details::Testing
 
     static constexpr auto pure = []<typename T>(T x){ return Stateful<T>([=](S s){ return pair(x, s); }); };
     static constexpr auto flatMap = []<typename F, typename T>(F f, Stateful<T> mx){
-      using R = result_of_t<F(T)>;
+      using R = invoke_result_t<F, T>;
       return R{[=](S s){
         auto [x, snew] = run(s, mx);
         return run(snew, f(x));
       }};
     };
     static constexpr auto state = []<typename F>(F f){
-      using R = result_of_t<F(S)>;
+      using R = invoke_result_t<F,S>;
       return function<R(S)>(f);
     };
 

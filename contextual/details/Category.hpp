@@ -15,12 +15,12 @@ namespace Contextual::Details
     static constexpr auto askCat =
       asksC2(
         []<typename Context, typename F>
-        (Context, F&& f){ return Context::cat(forward<F>(f)); });
+        (Context, F&& f){ return Context::cat(std::forward<F>(f)); });
 
     static constexpr auto askCompose =
       asksC3(
         []<typename Context, typename F, typename G>
-          (Context, F&& f, G&& g){ return Context::compose(forward<F>(f), forward<G>(g)); });
+          (Context, F&& f, G&& g){ return Context::compose(std::forward<F>(f), std::forward<G>(g)); });
 
     class Cat : public Static_curried<Cat, Nat<1>>{
     public:

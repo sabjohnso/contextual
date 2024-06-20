@@ -8,8 +8,14 @@ target_include_directories(contextual_header
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${contextual_INSTALL_INCLUDEDIR}>)
 
+target_link_libraries(contextual_header INTERFACE
+  type_utility::header
+  function_utility::function_utility
+  ctstring::header
+  list_processing::header)
+
 add_library(contextual::header ALIAS contextual_header)
-  
+
 install(TARGETS contextual_header
   EXPORT contextual_EXPORTS
   RUNTIME DESTINATION ${contextual_INSTALL_BINDIR}

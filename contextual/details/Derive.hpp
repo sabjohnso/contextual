@@ -19,7 +19,7 @@ namespace Contextual::Details
 
 
   template<typename F, typename T>
-  using TypeResult = typename result_of_t<F(Type<T>)>::type;
+  using TypeResult = typename invoke_result_t<F,Type<T>>::type;
 
   template<typename Proto, typename ... Fs>
   class Derive;

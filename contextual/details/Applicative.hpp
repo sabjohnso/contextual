@@ -149,7 +149,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(F&& f, T&& mx)
           {
-            return Base::fApply(Base::pure(forward<F>(f)), forward<T>(mx));
+            return Base::fApply(Base::pure(std::forward<F>(f)), std::forward<T>(mx));
           }
         }; // end of class FMap
 
@@ -211,7 +211,7 @@ namespace Contextual::Details {
           call(F&& mf, A&& ma, B&& mb)
           {
             return Base::fApply(
-              Base::fApply(forward<F>(mf), forward<A>(ma)), forward<B>(mb));
+              Base::fApply(std::forward<F>(mf), std::forward<A>(ma)), std::forward<B>(mb));
           }
         };
 
@@ -247,9 +247,9 @@ namespace Contextual::Details {
           call(F&& f, A&& ma, B&& mb, C&& mc)
           {
             return Base::fApply2(
-              Base::fApply(forward<F>(f), forward<A>(ma)),
-              forward<B>(mb),
-              forward<C>(mc));
+              Base::fApply(std::forward<F>(f), std::forward<A>(ma)),
+              std::forward<B>(mb),
+              std::forward<C>(mc));
           }
         };
 
@@ -286,10 +286,10 @@ namespace Contextual::Details {
           call(F&& f, A&& ma, B&& mb, C&& mc, D&& md)
           {
             return Base::fApply3(
-              Base::fApply(forward<F>(f), forward<A>(ma)),
-              forward<B>(mb),
-              forward<C>(mc),
-              forward<D>(md));
+              Base::fApply(std::forward<F>(f), std::forward<A>(ma)),
+              std::forward<B>(mb),
+              std::forward<C>(mc),
+              std::forward<D>(md));
           }
         };
 
@@ -332,11 +332,11 @@ namespace Contextual::Details {
           call(F&& f, A&& ma, B&& mb, C&& mc, D&& md, E&& me)
           {
             return Base::fApply4(
-              Base::fApply(forward<F>(f), forward<A>(ma)),
-              forward<B>(mb),
-              forward<C>(mc),
-              forward<D>(md),
-              forward<E>(me));
+              Base::fApply(std::forward<F>(f), std::forward<A>(ma)),
+              std::forward<B>(mb),
+              std::forward<C>(mc),
+              std::forward<D>(md),
+              std::forward<E>(me));
           }
         };
 
@@ -372,7 +372,7 @@ namespace Contextual::Details {
           call(F&& f, A&& ma)
           {
             return Base::fApply(
-              Base::pure(curry<1>(forward<F>(f))), forward<A>(ma));
+              Base::pure(curry<1>(std::forward<F>(f))), std::forward<A>(ma));
           }
         };
 
@@ -408,9 +408,9 @@ namespace Contextual::Details {
           call(F&& f, A&& ma, B&& mb)
           {
             return Base::fApply2(
-              Base::pure(curry<2>(forward<F>(f))),
-              forward<A>(ma),
-              forward<B>(mb));
+              Base::pure(curry<2>(std::forward<F>(f))),
+              std::forward<A>(ma),
+              std::forward<B>(mb));
           }
         };
 
@@ -446,10 +446,10 @@ namespace Contextual::Details {
           call(F&& f, A&& ma, B&& mb, C&& mc)
           {
             return Base::fApply3(
-              Base::pure(curry<3>(forward<F>(f))),
-              forward<A>(ma),
-              forward<B>(mb),
-              forward<C>(mc));
+              Base::pure(curry<3>(std::forward<F>(f))),
+              std::forward<A>(ma),
+              std::forward<B>(mb),
+              std::forward<C>(mc));
           }
         };
 
@@ -485,11 +485,11 @@ namespace Contextual::Details {
           call(F&& f, A&& ma, B&& mb, C&& mc, D&& md)
           {
             return Base::fApply4(
-              Base::pure(curry<4>(forward<F>(f))),
-              forward<A>(ma),
-              forward<B>(mb),
-              forward<C>(mc),
-              forward<D>(md));
+              Base::pure(curry<4>(std::forward<F>(f))),
+              std::forward<A>(ma),
+              std::forward<B>(mb),
+              std::forward<C>(mc),
+              std::forward<D>(md));
           }
         };
 
@@ -531,12 +531,12 @@ namespace Contextual::Details {
           call(F&& f, A&& ma, B&& mb, C&& mc, D&& md, E&& me)
           {
             return Base::fApply5(
-              Base::pure(curry<5>(forward<F>(f))),
-              forward<A>(ma),
-              forward<B>(mb),
-              forward<C>(mc),
-              forward<D>(md),
-              forward<E>(me));
+              Base::pure(curry<5>(std::forward<F>(f))),
+              std::forward<A>(ma),
+              std::forward<B>(mb),
+              std::forward<C>(mc),
+              std::forward<D>(md),
+              std::forward<E>(me));
           }
         };
 
@@ -603,7 +603,7 @@ namespace Contextual::Details {
     {
       static constexpr auto askPure =
         asksC2([]<typename Context, typename T>(Context, T&& x) {
-          return Context::pure(forward<T>(x));
+            return Context::pure(std::forward<T>(x));
         });
 
     public:
@@ -619,7 +619,7 @@ namespace Contextual::Details {
     {
       static constexpr auto askFApply = asksC3(
         []<typename Context, typename F, typename T>(Context, F&& mf, T&& mx) {
-          return Context::fApply(forward<F>(mf), forward<T>(mx));
+          return Context::fApply(std::forward<F>(mf), std::forward<T>(mx));
         });
 
     public:
@@ -646,7 +646,7 @@ namespace Contextual::Details {
       static constexpr auto
       fMap(F&& f, T&& mx)
       {
-        return Context::fApply(Context::pure(forward<F>(f)), forward<T>(mx));
+        return Context::fApply(Context::pure(std::forward<F>(f)), std::forward<T>(mx));
       }
     };
 

@@ -50,7 +50,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(T&& x, U&& y)
           {
-            return Base::op_(forward<T>(x), forward<U>(y));
+            return Base::op_(std::forward<T>(x), std::forward<U>(y));
           }
         };
 

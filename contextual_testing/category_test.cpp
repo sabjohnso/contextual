@@ -96,7 +96,7 @@ namespace Contextual::Details::Testing
         });
     };
 
-    constexpr FunctionMonad functionMonad{};
+
 
     constexpr FunctionContext functionContext{};
 
@@ -145,7 +145,7 @@ namespace Contextual::Details::Testing
         static constexpr auto
         call(F, Nil){ return Nil{}; }
 
-        template<typename F, typename T, typename Result = result_of_t<F(T)>>
+        template<typename F, typename T, typename Result = invoke_result_t<F, T>>
         static constexpr Result
         call(F f, ListType<T> xs){
           return hasData(xs)

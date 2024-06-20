@@ -38,7 +38,7 @@ namespace Contextual::Instances
         template<typename F, typename T, typename E>
         static constexpr auto
         call(F&& f, T&& mx, E&& e){
-          return forward<F>(f)(forward<T>(mx)(e))(e);
+          return std::forward<F>(f)(std::forward<T>(mx)(e))(e);
         }
       }; // end of class FlatMap;
 

@@ -47,7 +47,7 @@ namespace Contextual::Details::Testing
       template<typename F, typename T>
       static constexpr auto
       fApply(F&& f, T&& x){
-        return forward<F>(f)(forward<T>(x));
+        return std::forward<F>(f)(std::forward<T>(x));
       }
     } identityApplicative{};
 
@@ -57,7 +57,7 @@ namespace Contextual::Details::Testing
     public:
       template<typename T>
       static constexpr auto
-      pure(T&& x){ return make_optional(forward<T>(x)); }
+      pure(T&& x){ return make_optional(std::forward<T>(x)); }
 
       template<typename F, typename T>
       static constexpr auto

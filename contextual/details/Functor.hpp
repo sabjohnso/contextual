@@ -98,7 +98,7 @@ namespace Contextual::Details
           static constexpr auto
           call(T&& mx, F&& f)
           {
-            return Base::fMap(forward<F>(f), forward<T>(mx));
+            return Base::fMap(std::forward<F>(f), std::forward<T>(mx));
           }
         };
 
@@ -133,7 +133,7 @@ namespace Contextual::Details
           static constexpr auto
           call(T&& x, U&& mx)
           {
-            return Base::fMap(constant(forward<T>(x)), forward<U>(mx));
+            return Base::fMap(constant(std::forward<T>(x)), std::forward<U>(mx));
           }
         };
 
@@ -179,7 +179,7 @@ namespace Contextual::Details
       static constexpr auto askFMap =
         asksC3([]<typename Context, typename F, typename T>
                (Context, F&& f, T&& mx){
-                 return Context::fMap(forward<F>(f), forward<T>(mx));
+                 return Context::fMap(std::forward<F>(f), std::forward<T>(mx));
                });
 
     public:

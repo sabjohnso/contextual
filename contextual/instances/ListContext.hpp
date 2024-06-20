@@ -47,7 +47,7 @@ namespace Contextual::Instances
         template<typename F, typename T>
         static auto
         call(F&& f, T&& xs){
-          return  map(forward<F>(f), forward<T>(xs));
+          return  map(std::forward<F>(f), std::forward<T>(xs));
         }
 
       }; // end of class FMap
@@ -59,7 +59,7 @@ namespace Contextual::Instances
       public:
         template<typename T>
         static auto
-        call(T&& x){ return list(forward<T>(x)); }
+        call(T&& x){ return list(std::forward<T>(x)); }
       }; // end of class Pure
 
       /**
@@ -83,7 +83,7 @@ namespace Contextual::Instances
       public:
         template<typename F, typename T>
         static auto
-        call(F&& f, T xs){  return mMap(forward<F>(f), xs); }
+        call(F&& f, T xs){  return mMap(std::forward<F>(f), xs); }
       }; // end of class FlatMap
 
       /**

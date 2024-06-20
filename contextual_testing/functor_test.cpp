@@ -39,7 +39,7 @@ namespace Contextual::Details::Testing
     public:
       template<typename F, typename T>
       static constexpr auto
-      fMap(F&& f, T&& mx){ return forward<F>(f)(forward<T>(mx)); }
+      fMap(F&& f, T&& mx){ return std::forward<F>(f)(std::forward<T>(mx)); }
     } identityFunctor{};
 
     constexpr
@@ -48,7 +48,7 @@ namespace Contextual::Details::Testing
       template<typename F, typename T>
       static constexpr auto
       fMap(F&& f, optional<T> const& mx){
-        using Result = optional<decay_t<result_of_t<F(T)>>>;
+        using Result = optional<decay_t<invoke_result_t<F, T>>>;
         return mx.has_value()
           ? Result(f(mx.value()))
           : Result();

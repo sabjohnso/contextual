@@ -118,7 +118,7 @@ namespace Contextual::Details {
           call(F&& f, T&& mx)
           {
             return Base::flatMap(
-              compose(Base::pure, forward<F>(f)), forward<T>(mx));
+              compose(Base::pure, std::forward<F>(f)), std::forward<T>(mx));
           }
         };
 
@@ -157,7 +157,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(F&& f, T&& mx)
           {
-            return Base::flatten(Base::fMap(forward<F>(f), forward<T>(mx)));
+            return Base::flatten(Base::fMap(std::forward<F>(f), std::forward<T>(mx)));
           }
         };
 
@@ -195,7 +195,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(T&& mmx)
           {
-            return Base::flatMap(identity, forward<T>(mmx));
+            return Base::flatMap(identity, std::forward<T>(mmx));
           }
         };
 
@@ -235,8 +235,8 @@ namespace Contextual::Details {
           call(F&& mf, T&& mx)
           {
             return Base::flatMap(
-              [mx = forward<T>(mx)](auto f) { return Base::fMap(f, mx); },
-              forward<F>(mf));
+              [mx = std::forward<T>(mx)](auto f) { return Base::fMap(f, mx); },
+              std::forward<F>(mf));
           }
         };
 
@@ -324,7 +324,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(T&& mx, F&& f)
           {
-            return Base::flatMap(forward<F>(f), forward<T>(mx));
+            return Base::flatMap(std::forward<F>(f), std::forward<T>(mx));
           }
         };
 
@@ -432,7 +432,7 @@ namespace Contextual::Details {
     {
       static constexpr auto askFlatMap = asksC3(
         []<typename Context, typename F, typename T>(Context, F&& f, T&& mx) {
-          return Context::flatMap(forward<F>(f), forward<T>(mx));
+          return Context::flatMap(std::forward<F>(f), std::forward<T>(mx));
         });
 
     public:
@@ -454,7 +454,7 @@ namespace Contextual::Details {
     {
       static constexpr auto askFlatten =
         asksC2([]<typename Context, typename T>(Context, T&& mmx) {
-          return Context::flatten(forward<T>(mmx));
+            return Context::flatten(std::forward<T>(mmx));
         });
 
     public:
@@ -492,7 +492,7 @@ namespace Contextual::Details {
         call(F&& f, T&& mx)
         {
           return Base::flatMap(
-            compose([](auto x) { return Base::pure(x); }, forward<F>(f)), mx);
+            compose([](auto x) { return Base::pure(x); }, std::forward<F>(f)), mx);
         }
       };
 
@@ -511,7 +511,7 @@ namespace Contextual::Details {
         call(F&& mf, T&& mx)
         {
           return Base::flatMap(
-            [mx = forward<T>(mx)](auto&& f) { return Base::fMap(f, mx); }, mf);
+            [mx = std::forward<T>(mx)](auto&& f) { return Base::fMap(f, mx); }, mf);
         }
       };
 
@@ -529,7 +529,7 @@ namespace Contextual::Details {
         static constexpr auto
         call(F&& f, T&& mx)
         {
-          return Base::flatten(Base::fMap(forward<F>(f), forward<T>(mx)));
+          return Base::flatten(Base::fMap(std::forward<F>(f), std::forward<T>(mx)));
         }
       };
 

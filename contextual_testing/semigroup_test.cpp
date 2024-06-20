@@ -58,9 +58,9 @@ namespace Contextual::Details::Testing
         static constexpr auto
         call(T&& x, U&& y, Vs&& ... zs){
           if constexpr (count_types<Vs...>() == 0){
-            return append(forward<T>(x), forward<U>(y));
+            return append(std::forward<T>(x), std::forward<U>(y));
           } else {
-            return call(append(forward<T>(x), forward<T>(y)), forward<Vs>(zs) ...);
+            return call(append(std::forward<T>(x), std::forward<T>(y)), std::forward<Vs>(zs) ...);
           }
         }
       };

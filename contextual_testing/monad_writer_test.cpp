@@ -44,7 +44,7 @@ namespace Contextual::Details::Testing
     constexpr auto returnM = MonadWriter::returnM;
     constexpr auto beginM = MonadWriter::beginM;
     constexpr auto letF = MonadWriter::letF;
-    constexpr auto letM = MonadWriter::letM;
+
 
     class ListMonoid {
     public:

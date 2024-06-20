@@ -32,7 +32,7 @@ namespace Contextual::Instances
         template<typename T>
         static constexpr auto
         call(T&& x){
-          return [x = forward<T>(x)]{ return x; };
+          return [x = std::forward<T>(x)]{ return x; };
         }
       }; // end of class Pure
 
@@ -41,7 +41,7 @@ namespace Contextual::Instances
         template<typename F, typename T>
         static constexpr auto
         call(F&& f, T&& mx){
-          return [f = forward<F>(f), mx = forward<T>(mx)]{
+          return [f = std::forward<F>(f), mx = std::forward<T>(mx)]{
             return f(mx())();
           };
         }

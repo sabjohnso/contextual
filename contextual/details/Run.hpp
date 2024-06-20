@@ -14,20 +14,20 @@ namespace Contextual::Details
   public:
     template<typename T, typename F>
     static constexpr auto
-    call(T&& x, F&& f){ return forward<F>(f)(forward<T>(x)); }
+    call(T&& x, F&& f){ return std::forward<F>(f)(std::forward<T>(x)); }
 
     template<
       typename T,
       typename F,
       typename G,
-      typename FirstResult = result_of_t<F(T)>,
-      typename SecondResult = result_of_t<G(T)>,
+      typename FirstResult = invoke_result_t<F,T>,
+      typename SecondResult = invoke_result_t<G,T>,
       typename Result = conditional_t<
         is_same_v<FirstResult,SecondResult>,
         FirstResult, Either<FirstResult,SecondResult> >
       >
     static constexpr auto
-    call(T&& x, Either<F,G> const& f){
+    call(T&& x, Either<F,G> const& f) {
       return f.holdsFirst()
         ? Result(f.first()( forward<T>(x)))
         : Result(f.second()( forward<T>(x)));

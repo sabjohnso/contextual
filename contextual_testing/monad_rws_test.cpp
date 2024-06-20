@@ -48,15 +48,12 @@ namespace Contextual::Details::Testing
     constexpr auto pure    = MonadRWS::pure;
     constexpr auto returnM = MonadRWS::returnM;
     constexpr auto fMap    = MonadRWS::fMap;
-    constexpr auto letF    = MonadRWS::letF;
     constexpr auto fApply  = MonadRWS::fApply;
     constexpr auto flatMap = MonadRWS::flatMap;
     constexpr auto letM    = MonadRWS::letM;
     constexpr auto beginM  = MonadRWS::beginM;
-    constexpr auto flatten = MonadRWS::flatten;
     constexpr auto ask     = MonadRWS::ask;
     constexpr auto asks    = MonadRWS::asks;
-    constexpr auto local   = MonadRWS::local;
     constexpr auto writer  = MonadRWS::writer;
     constexpr auto tell    = MonadRWS::tell;
     constexpr auto listen  = MonadRWS::listen;
@@ -64,7 +61,6 @@ namespace Contextual::Details::Testing
     constexpr auto censor  = MonadRWS::censor;
     constexpr auto get     = MonadRWS::get;
     constexpr auto put     = MonadRWS::put;
-    constexpr auto select  = MonadRWS::select;
     constexpr auto modify  = MonadRWS::modify;
 
 

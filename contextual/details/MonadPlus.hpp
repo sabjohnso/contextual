@@ -166,7 +166,7 @@ namespace Contextual::Details {
   {
     constexpr static auto askMPlus = asksC3(
       []<typename Context, typename T, typename U>(Context, T&& mx, U&& my) {
-        return Context::mPlus(forward<T>(mx), forward<U>(my));
+        return Context::mPlus(std::forward<T>(mx), std::forward<U>(my));
       });
 
     class MPlus : public Static_curried<MPlus, Nat<2>>

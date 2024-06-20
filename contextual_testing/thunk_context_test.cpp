@@ -32,7 +32,7 @@ namespace Contextual::Instances::Testing
     constexpr auto add = curry<2>(plus{});
     constexpr auto dup = curry<2>([](auto f, auto x){ return f(x, x); });
     constexpr auto twc = dup(add);
-    constexpr auto let = [](auto x, auto f){ return f(x); };
+
 
   } // end of anonymous namespacee
 

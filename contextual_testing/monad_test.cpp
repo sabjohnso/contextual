@@ -80,7 +80,7 @@ namespace Contextual::Details::Testing
       public:
         template<typename F>
         static Nil
-        call(F f, Nil){
+        call(F , Nil){
           return Nil{};
         }
 

@@ -25,7 +25,7 @@ namespace Contextual::Details
   using std::false_type;
   using std::true_type;
   using std::decay_t;
-  using std::result_of_t;
+  using std::invoke_result_t;
   using std::is_same_v;
   using std::conditional_t;
 

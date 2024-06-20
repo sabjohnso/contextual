@@ -86,7 +86,7 @@ namespace Contextual::Details
         public:
           template<typename T>
           static constexpr auto
-          call(T&& w){ return Base::writer(pair(unit, forward<T>(w))); }
+          call(T&& w){ return Base::writer(pair(unit, std::forward<T>(w))); }
         }; // end of class Tell
       public:
         using Base::Base;
@@ -114,8 +114,8 @@ namespace Contextual::Details
           static constexpr auto
           call(T&& aw){
             return Base::flatMap(
-              constant(pure(std::get<0>(forward<T>(aw)))),
-              Base::tell(std::get<1>(forward<T>(aw))));
+              constant(pure(std::get<0>(std::forward<T>(aw)))),
+              Base::tell(std::get<1>(std::forward<T>(aw))));
           }
         }; // end of class Writer
       public:
@@ -148,8 +148,8 @@ namespace Contextual::Details
           call(F&& f, T&& mx){
             return Base::pass(
               Base::fMap(
-                [f = forward<F>(f)]<typename U>(U&& x){ return pair(forward<U>(x), move(f)); },
-                forward<T>(mx)));
+                [f = std::forward<F>(f)]<typename U>(U&& x){ return pair(std::forward<U>(x), std::move(f)); },
+                std::forward<T>(mx)));
           }
         };
       public:
@@ -197,7 +197,7 @@ namespace Contextual::Details
     class Tell : public Static_curried<Tell, Nat<1>>{
       static constexpr auto askTell =
         asksC2([]<typename Context, typename W>(Context, W&& w) {
-            return Context::tell(forward<W>(w));
+            return Context::tell(std::forward<W>(w));
           });
     public:
       template<typename W>
@@ -214,7 +214,7 @@ namespace Contextual::Details
     class Writer : public Static_curried<Writer, Nat<1>>{
       static constexpr auto askWriter =
         asksC2([]<typename Context, typename Pair>(Context, Pair&& aw) {
-            return Context::writer(forward<Pair>(aw));
+            return Context::writer(std::forward<Pair>(aw));
           });
     public:
       template<typename AW>
@@ -231,7 +231,7 @@ namespace Contextual::Details
     class Listen : public Static_curried<Listen, Nat<1>>{
       static constexpr auto askListen =
         asksC2([]<typename Context, typename T>(Context, T&& aw) {
-            return Context::listen(forward<T>(aw));
+            return Context::listen(std::forward<T>(aw));
           });
     public:
       template<typename T>
@@ -249,7 +249,7 @@ namespace Contextual::Details
     class Pass : public Static_curried<Pass, Nat<1>>{
       static constexpr auto askPass =
         asksC2([]<typename Context, typename Pair>(Context, Pair&& maf) {
-            return Context::pass(forward<Pair>(maf));
+            return Context::pass(std::forward<Pair>(maf));
           });
     public:
       template<typename T>

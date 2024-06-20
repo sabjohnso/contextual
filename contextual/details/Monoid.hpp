@@ -167,7 +167,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(T&& x, U&& y)
           {
-            return Base::mAppend(forward<T>(x), forward<U>(y));
+            return Base::mAppend(std::forward<T>(x), std::forward<U>(y));
           }
 
           template<typename T, typename U, typename V, typename... Vs>
@@ -175,9 +175,9 @@ namespace Contextual::Details {
           call(T&& x, U&& y, V&& z, Vs&&... zs)
           {
             return call(
-              Base::mAppend(forward<T>(x), forward<T>(y)),
-              forward<V>(z),
-              forward<Vs>(zs)...);
+              Base::mAppend(std::forward<T>(x), std::forward<T>(y)),
+              std::forward<V>(z),
+              std::forward<Vs>(zs)...);
           }
         };
 

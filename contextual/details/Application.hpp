@@ -25,8 +25,8 @@ namespace Contextual::Details
     template<typename G, typename U>
     constexpr
     Application(G&& g, U&& x)
-      : function_(forward<G>(g))
-      , argument_(forward<U>(x))
+      : function_(std::forward<G>(g))
+      , argument_(std::forward<U>(x))
     {}
 
   protected:
@@ -35,13 +35,13 @@ namespace Contextual::Details
     function() const& { return function_; }
 
     constexpr function_rvalue_reference
-    function() && { return move(function_); }
+    function() && { return std::move(function_); }
 
     constexpr argument_const_reference
     argument() const& { return argument_; }
 
     constexpr argument_rvalue_reference
-    argument() && { return move(argument_); }
+    argument() && { return std::move(argument_); }
 
     ~Application() = default;
 

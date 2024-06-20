@@ -112,7 +112,7 @@ namespace Contextual::Details
         public:
           template<typename F>
           static constexpr auto
-          call(F&& f){ return Base::fMap(forward<F>(f), Base::ask); }
+          call(F&& f){ return Base::fMap(std::forward<F>(f), Base::ask); }
         };
 
       public:
@@ -198,7 +198,7 @@ namespace Contextual::Details
      static constexpr auto askLocal =
        asksC3([]<typename Context, typename F, typename T>
               (Context, F&& f, T&& mx){
-                return Context::local(forward<F>(f), forward<T>(mx));
+                return Context::local(std::forward<F>(f), std::forward<T>(mx));
               });
 
     public:

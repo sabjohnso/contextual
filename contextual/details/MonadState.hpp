@@ -46,8 +46,8 @@ namespace Contextual::Details
   concept HasMinimalMonadState =
     HasMinimalMonad<Context> &&
     (HasState<Context> ||
-     (HasPut<Context> || HasModify<Context>) &&
-     (HasGet<Context> || HasSelect<Context>));
+     ((HasPut<Context> || HasModify<Context>) &&
+      (HasGet<Context> || HasSelect<Context>)));
 
   template<typename Context>
   concept MissingMinimalMonadState = ! HasMinimalMonadState<Context>;
@@ -168,7 +168,7 @@ namespace Contextual::Details
         public:
           template<typename F>
           static constexpr auto
-          call(F&& f){ return Base::fMap(forward<F>(f), Base::get); }
+          call(F&& f){ return Base::fMap(std::forward<F>(f), Base::get); }
         };
       public:
         using Base::Base;
@@ -219,7 +219,7 @@ namespace Contextual::Details
           template<typename S>
           static constexpr auto
           call(S&& s){
-            return Base::state([s = forward<S>(s)](auto){
+            return Base::state([s = std::forward<S>(s)](auto){
               return pair(unit, s); });
           }
         };
@@ -250,7 +250,7 @@ namespace Contextual::Details
           template<typename F>
           static constexpr auto
           call(F&& f){
-            return Base::flatMap(Base::put, Base::select(forward<F>(f)));
+            return Base::flatMap(Base::put, Base::select(std::forward<F>(f)));
           }
         };
       public:
@@ -328,7 +328,7 @@ namespace Contextual::Details
     class Put : public Static_curried<Put,Nat<1>> {
       static constexpr auto askPut =
         asksC2([]<typename Context, typename S>
-               (Context, S&& s){ return Context::put(forward<S>(s)); });
+               (Context, S&& s){ return Context::put(std::forward<S>(s)); });
     public:
       template<typename S>
       static constexpr auto

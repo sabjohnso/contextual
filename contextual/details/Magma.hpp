@@ -44,7 +44,7 @@ namespace Contextual::Details
       static constexpr auto askOp =
         asksC3([]<typename Context, typename T, typename U>
                (Context, T&& x, U&& y){
-                 return Context::op(forward<T>(x), forward<U>(y));
+                 return Context::op(std::forward<T>(x), std::forward<U>(y));
                });
     public:
       template<typename T, typename U>

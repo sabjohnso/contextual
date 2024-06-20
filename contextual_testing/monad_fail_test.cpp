@@ -37,8 +37,6 @@ namespace Contextual::Details::Testing
 {
   namespace // anonymous
   {
-    constexpr auto add = curry<2>(std::plus{});
-
 
     constexpr auto fail = MonadFail::fail;
     constexpr auto letM = MonadFail::letM;
@@ -64,18 +62,18 @@ namespace Contextual::Details::Testing
     public:
       static constexpr auto fail = []<typename T>(Type<T>){ return nil<T>; };
       static constexpr auto pure = []<typename T>(T x){ return list(x); };
-      static constexpr auto flatMap =
-        [](auto g){ return g(g); }(
-          []<typename G>(G&& g){ return
-              [g = forward<G>(g)]
-              <typename F, typename T>
-              (F f, T xs) -> decltype(f(head(xs))){
-                using R = decltype(f(head(xs)));
-                return hasData(xs)
-                  ? append(f(head(xs)), g(g)(f, tail(xs)))
-                  : R::nil;
-            }; });
+      static constexpr auto flatMap = []<typename F, typename T>(F f, T xs){
+        using R = decltype(f(head(xs)));
+        const auto recur = [=](auto recur, T xs, R accum) -> R {
+          return hasData(xs)
+            ? recur(recur, tail(xs), rappend(f(head(xs)), accum))
+            : reverse(accum);
+        };
+        return recur(recur, xs, R::nil);
+      };
+
     };
+
 
     class ListContext
       : public Derive<ProtoListContext, MixinMonadFail, MixinMonadFailUtility>

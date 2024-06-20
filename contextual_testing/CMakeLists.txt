@@ -4,7 +4,7 @@ macro(contextual_add_test test_name exe_name)
   add_executable(${exe_name} ${ARGN})
   target_link_libraries(${exe_name} PRIVATE
     contextual::header
-    type_utility::type_utility
+    type_utility::header
     list_processing::header
     ctstring::header
     GTest::gtest_main)
