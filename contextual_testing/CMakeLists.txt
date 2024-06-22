@@ -35,3 +35,25 @@ contextual_add_test(ctlist_context ctlist_context_test ctlist_context_test.cpp)
 contextual_add_test(ctstring_context ctstring_context_test ctstring_context_test.cpp)
 contextual_add_test(thunk_context thunk_context_test thunk_context_test.cpp)
 contextual_add_test(function_context function_context_test function_context_test.cpp)
+
+
+find_package(Catch2 REQUIRED)
+
+function(contextual_add_catch2_test name)
+  set(exe_name ${name}_test)
+  set(src_name ${exe_name}.cpp)
+  add_executable(${exe_name} ${src_name})
+  target_link_libraries(${exe_name}
+    PRIVATE
+    contextual::header
+    type_utility::header
+    list_processing::header
+    ctstring::header
+    Catch2::Catch2WithMain)
+  set_target_properties(${exe_name}
+    PROPERTIES
+    CXX_STANDARD ${contextual_CXX_STANDARD})
+  add_test(${name} ${exe_name})
+endfunction()
+
+contextual_add_catch2_test(arrow)
