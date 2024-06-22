@@ -11,7 +11,6 @@ target_include_directories(contextual_header
 target_link_libraries(contextual_header INTERFACE
   type_utility::header
   function_utility::function_utility
-  ctstring::header
   list_processing::header)
 
 add_library(contextual::header ALIAS contextual_header)

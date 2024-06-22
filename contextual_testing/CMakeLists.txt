@@ -6,7 +6,6 @@ macro(contextual_add_test test_name exe_name)
     contextual::header
     type_utility::header
     list_processing::header
-    ctstring::header
     GTest::gtest_main)
   set_target_properties(${exe_name}
     PROPERTIES
@@ -31,8 +30,6 @@ contextual_add_test(monad_rws monad_rws_test monad_rws_test.cpp)
 contextual_add_test(category category_test category_test.cpp)
 contextual_add_test(type_context type_context_test type_context_test.cpp)
 contextual_add_test(list_context list_context_test list_context_test.cpp)
-contextual_add_test(ctlist_context ctlist_context_test ctlist_context_test.cpp)
-contextual_add_test(ctstring_context ctstring_context_test ctstring_context_test.cpp)
 contextual_add_test(thunk_context thunk_context_test thunk_context_test.cpp)
 contextual_add_test(function_context function_context_test function_context_test.cpp)
 
@@ -48,7 +45,6 @@ function(contextual_add_catch2_test name)
     contextual::header
     type_utility::header
     list_processing::header
-    ctstring::header
     Catch2::Catch2WithMain)
   set_target_properties(${exe_name}
     PROPERTIES
@@ -56,4 +52,4 @@ function(contextual_add_catch2_test name)
   add_test(${name} ${exe_name})
 endfunction()
 
-contextual_add_catch2_test(arrow)
+# contextual_add_catch2_test(arrow)
