@@ -25,7 +25,7 @@
 using std::optional;
 using std::nullopt_t;
 using std::nullopt;
-using std::result_of_t;
+using std::invoke_result_t;
 
 using FunctionUtility::curry;
 
@@ -48,7 +48,7 @@ namespace Contextual::Details::Testing
       static constexpr auto fail = []<typename T>(Type<T>){ return optional<T>{}; };
       static constexpr auto pure = []<typename T>(T x){ return optional<T>{x}; };
       static constexpr auto flatMap =
-        []<typename F, typename T, typename R = result_of_t<F(T)>>
+        []<typename F, typename T, typename R = invoke_result_t<F,T>>
         (F f, optional<T> mx){return mx.has_value() ? f(mx.value()) : R{}; };
     };
 

@@ -28,8 +28,8 @@ namespace Contextual::Details
 
     template<
       typename Context,
-      typename PassResult = result_of_t<Run(Context,Pass)>,
-      typename FailResult = result_of_t<Run(Context,Fail)>,
+      typename PassResult = invoke_result_t<Run,Context,Pass>,
+      typename FailResult = invoke_result_t<Run,Context,Fail>,
       typename Result = conditional_t<
         is_same_v<PassResult,FailResult>,
         PassResult, Either<PassResult,FailResult>
@@ -44,8 +44,8 @@ namespace Contextual::Details
 
     template<
       typename Context,
-      typename PassResult = result_of_t<Run(Context,Pass)>,
-      typename FailResult = result_of_t<Run(Context,Fail)>,
+      typename PassResult = invoke_result_t<Run,Context,Pass>,
+      typename FailResult = invoke_result_t<Run,Context,Fail>,
       typename Result = conditional_t<
         is_same_v<PassResult,FailResult>,
         PassResult, Either<PassResult,FailResult>

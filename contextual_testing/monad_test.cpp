@@ -32,7 +32,7 @@ namespace Contextual::Details::Testing
   {
     using std::declval;
     using std::decay_t;
-    using std::result_of_t;
+    using std::invoke_result_t;
 
     using ListProcessing::Dynamic::Nil;
     using ListProcessing::Dynamic::ListType;
@@ -84,7 +84,7 @@ namespace Contextual::Details::Testing
           return Nil{};
         }
 
-        template<typename F, typename T, typename R = result_of_t<F(typename T::value_type)>>
+        template<typename F, typename T, typename R = invoke_result_t<F,typename T::value_type>>
         static R
         call(F f, T xs){
           return hasData(xs)

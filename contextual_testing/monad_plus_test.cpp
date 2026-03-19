@@ -24,7 +24,7 @@ namespace Contextual::Details::Testing
 {
   namespace // anonymous
   {
-    using std::result_of_t;
+    using std::invoke_result_t;
 
     using ListProcessing::Dynamic::nil;
     using ListProcessing::Dynamic::list;

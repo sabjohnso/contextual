@@ -23,7 +23,7 @@ using std::forward;
 using std::optional;
 using std::make_optional;
 using std::decay_t;
-using std::result_of_t;
+using std::invoke_result_t;
 
 namespace Contextual::Details::Testing
 {

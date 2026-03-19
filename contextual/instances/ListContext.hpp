@@ -23,7 +23,7 @@ namespace Contextual::Instances
 {
   namespace ListContextDetails
   {
-    using std::result_of_t;
+    using std::invoke_result_t;
     using std::forward;
 
     using TypeUtility::Nat;

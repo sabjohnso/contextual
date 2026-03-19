@@ -20,7 +20,7 @@
 #include <contextual/details/Applicative.hpp>
 
 using std::forward;
-using std::result_of_t;
+using std::invoke_result_t;
 using std::decay_t;
 using std::function;
 using std::optional;
@@ -62,7 +62,7 @@ namespace Contextual::Details::Testing
       template<typename F, typename T>
       static constexpr auto
       fApply(optional<F> const& mf, optional<T> const& mx){
-        using Result = optional<decay_t<result_of_t<F(T)>>>;
+        using Result = optional<decay_t<invoke_result_t<F,T>>>;
         return mf.has_value() && mx.has_value()
           ? Result(mf.value()(mx.value()))
           : Result();

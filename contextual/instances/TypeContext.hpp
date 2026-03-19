@@ -22,7 +22,7 @@ namespace Contextual::Instances
   namespace TypeContextDetails
   {
 
-    using std::result_of_t;
+    using std::invoke_result_t;
     using TypeUtility::type;
     using TypeUtility::Type;
 
@@ -32,7 +32,7 @@ namespace Contextual::Instances
         []<typename T>(T){ return type<T>; };
 
       static constexpr auto flatMap =
-        []<typename F, typename T>(F, Type<T>){ return result_of_t<F(T)>{}; };
+        []<typename F, typename T>(F, Type<T>){ return invoke_result_t<F,T>{}; };
 
     }; // end of class ProtoTypeContext
   } // end of namespace Details
