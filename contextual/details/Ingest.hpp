@@ -13,12 +13,12 @@ namespace Contextual::Details
    * context sensitive monad or return a context sensitive value,
    * unaltered.
    *
-   * @details The `injest` function acts as a idempotent constructor
+   * @details The `ingest` function acts as an idempotent constructor
    * for context sensitive values. The purpose is to provide less convoluted
    * user interaction by hiding the context sensitive monad from the user's
    * view.
    */
-  class Injest : public Static_curried<Injest, Nat<1>>{
+  class Ingest : public Static_curried<Ingest, Nat<1>>{
   public:
 
     /**
@@ -35,6 +35,6 @@ namespace Contextual::Details
     static constexpr auto
     call(T&& x){ return returnC(std::forward<T>(x)); }
 
-  } injest{};
+  } ingest{};
 
 } // end of namespace Contextual::Details

@@ -6,7 +6,7 @@
 #include <contextual/details/import.hpp>
 #include <contextual/details/Derive.hpp>
 #include <contextual/details/Contextual.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 
 namespace Contextual::Details
 {
@@ -51,8 +51,8 @@ namespace Contextual::Details
       static constexpr auto
       call(T&& cx, U&& cy){ return
           letC(askOp,      [=](auto op){ return
-          letC(injest(cx), [=](auto  x){ return
-          letC(injest(cy), [=](auto  y){ return
+          letC(ingest(cx), [=](auto  x){ return
+          letC(ingest(cy), [=](auto  y){ return
                 returnC(op(x, y)); }); }); });
       }
     };

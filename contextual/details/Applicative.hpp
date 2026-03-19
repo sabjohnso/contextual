@@ -5,7 +5,7 @@
 //
 #include <contextual/details/Contextual.hpp>
 #include <contextual/details/Functor.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/import.hpp>
 
 namespace Contextual::Details {
@@ -630,8 +630,8 @@ namespace Contextual::Details {
         // clang-format off
         return
           letC(askFApply,   [=](auto fApply) {return
-          letC(injest(cmf), [=](auto mf) { return
-          letC(injest(cmx), [=](auto mx) { return
+          letC(ingest(cmf), [=](auto mf) { return
+          letC(ingest(cmx), [=](auto mx) { return
                 returnC(fApply(mf, mx)); }); }); });
         // clang-format on
       }

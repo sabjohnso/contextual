@@ -169,7 +169,7 @@ namespace Contextual::Details::Testing
       template<typename W>
       static auto
       tell(W w){
-        return [=](auto es){ return make_tuple(unit, run(logContext, injest(w)), std::get<1>(es)); };
+        return [=](auto es){ return make_tuple(unit, run(logContext, ingest(w)), std::get<1>(es)); };
       }
 
       template<typename T>

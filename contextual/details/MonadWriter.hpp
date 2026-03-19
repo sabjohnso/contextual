@@ -240,7 +240,7 @@ namespace Contextual::Details
         // clang-format off
         return
           letC(askListen, [=](auto listen){ return
-          letC(injest(cmx), [=](auto mx){ return
+          letC(ingest(cmx), [=](auto mx){ return
                 returnC(listen(mx)); }); });
         // clang-format on
       }
@@ -257,7 +257,7 @@ namespace Contextual::Details
       call(T&& cmx){
         return
           letC(askPass, [=](auto pass){ return
-          letC(injest(cmx), [=](auto mx){ return
+          letC(ingest(cmx), [=](auto mx){ return
                 returnC(pass(mx)); }); });
       }
     }; // end of class Pass

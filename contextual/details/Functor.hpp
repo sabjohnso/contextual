@@ -6,7 +6,7 @@
 #include <contextual/details/Derive.hpp>
 #include <contextual/details/Constant.hpp>
 #include <contextual/details/Contextual.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/import.hpp>
 
 namespace Contextual::Details
@@ -189,7 +189,7 @@ namespace Contextual::Details
       {
         return letC(askFMap, [=](auto fMap) {
           return
-            letC(injest(cmx), [=](auto mx) { return
+            letC(ingest(cmx), [=](auto mx) { return
                   returnC(fMap(f, mx)); });
         });
       }

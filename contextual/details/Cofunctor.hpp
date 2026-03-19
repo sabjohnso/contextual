@@ -4,7 +4,7 @@
 //
 #include <contextual/details/import.hpp>
 #include <contextual/details/Contextual.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/Functor.hpp>
 #include <contextual/details/Digest.hpp>
 

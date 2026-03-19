@@ -177,9 +177,9 @@ namespace Contextual::Details {
       call(T&& cmx, U&& cmy)
       {
         return letC(askMPlus, [=](auto mplus) {
-          return letC(injest(cmx), [=](auto mx) {
+          return letC(ingest(cmx), [=](auto mx) {
             return letC(
-              injest(cmy), [=](auto my) { return returnC(mplus(mx, my)); });
+              ingest(cmy), [=](auto my) { return returnC(mplus(mx, my)); });
           });
         });
       }

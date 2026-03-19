@@ -5,7 +5,7 @@
 //
 #include <contextual/details/import.hpp>
 #include <contextual/details/Contextual.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/Monad.hpp>
 
 namespace Contextual::Details
@@ -208,7 +208,7 @@ namespace Contextual::Details
         // clang-format off
         return
           letC(askLocal, [=](auto local){ return
-          letC(injest(cmx), [=](auto mx){ return
+          letC(ingest(cmx), [=](auto mx){ return
                 returnC(local(f, mx)); }); });
       }
     };

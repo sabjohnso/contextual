@@ -4,7 +4,7 @@
 // ... Contextual header files
 //
 #include <contextual/details/import.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/Contextual.hpp>
 
 namespace Contextual::Details
@@ -41,8 +41,8 @@ namespace Contextual::Details
       call(F&& cf, G&& cg){
         return
           letC(askCompose,[=](auto compose){ return
-          letC(injest(cf),[=](auto f){ return
-          letC(injest(cg),[=](auto g ){ return
+          letC(ingest(cf),[=](auto f){ return
+          letC(ingest(cg),[=](auto g ){ return
                 returnC(compose(f, g)); }); }); });
       }
     }; // end of class Compose

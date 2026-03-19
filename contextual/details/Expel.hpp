@@ -15,7 +15,7 @@ namespace Contextual::Details
     template<typename Context, typename T>
     static constexpr auto
     call(Context&& ctx, T&& cmx){
-      return run(ctx, injest(cmx));
+      return run(ctx, ingest(cmx));
     }
   } expel{};
 

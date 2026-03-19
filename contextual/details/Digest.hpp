@@ -5,7 +5,7 @@
 //
 #include <contextual/details/import.hpp>
 #include <contextual/details/Contextual.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/Functor.hpp>
 
 namespace Contextual::Details
@@ -24,12 +24,12 @@ namespace Contextual::Details
   public:
 
     /**
-     * @brief return the result of functorial mapping of the `injest`
+     * @brief return the result of functorial mapping of the `ingest`
      * function over the input.
      */
     template<typename T>
     static constexpr auto
-    call(T&& mx){return Functor::fMap(injest, mx);}
+    call(T&& mx){return Functor::fMap(ingest, mx);}
 
   } digest{};
 

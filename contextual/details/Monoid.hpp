@@ -4,7 +4,7 @@
 // ... Contextual header files
 //
 #include <contextual/details/Contextual.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/Semigroup.hpp>
 #include <contextual/details/import.hpp>
 

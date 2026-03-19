@@ -9,7 +9,7 @@
 #include <contextual/details/Expel.hpp>
 #include <contextual/details/Functor.hpp>
 #include <contextual/details/Identity.hpp>
-#include <contextual/details/Injest.hpp>
+#include <contextual/details/Ingest.hpp>
 #include <contextual/details/import.hpp>
 
 namespace Contextual::Details {
@@ -442,7 +442,7 @@ namespace Contextual::Details {
       {
         return letC(askExpel, [=](auto expel) {
           return letC(askFlatMap, [=](auto flatMap) {
-            return letC(injest(cmx), [=](auto mx) {
+            return letC(ingest(cmx), [=](auto mx) {
               return returnC(flatMap([=](auto x) { return expel(f(x)); }, mx));
             });
           });
