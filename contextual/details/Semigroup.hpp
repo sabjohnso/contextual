@@ -86,9 +86,9 @@ namespace Contextual::Details {
           call(T&& x, U&& y, Vs&&... zs)
           {
             if constexpr (count_types<Vs...>() == 0) {
-              return Base::op(x, y);
+              return Base::op(std::forward<T>(x), std::forward<U>(y));
             } else {
-              return call(Base::op(x, y), zs...);
+              return call(Base::op(std::forward<T>(x), std::forward<U>(y)), std::forward<Vs>(zs)...);
             }
           }
         };

@@ -73,7 +73,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(T&& x, U&& y)
           {
-            return Base::mappend_(forward<T>(x), forward<U>(y));
+            return Base::mappend_(std::forward<T>(x), std::forward<U>(y));
           }
         };
 
@@ -125,7 +125,7 @@ namespace Contextual::Details {
           static constexpr auto
           call(T&& x, U&& y)
           {
-            return Base::op_(forward<T>(x), forward<T>(y));
+            return Base::op_(std::forward<T>(x), std::forward<U>(y));
           }
         };
 
@@ -175,7 +175,7 @@ namespace Contextual::Details {
           call(T&& x, U&& y, V&& z, Vs&&... zs)
           {
             return call(
-              Base::mAppend(std::forward<T>(x), std::forward<T>(y)),
+              Base::mAppend(std::forward<T>(x), std::forward<U>(y)),
               std::forward<V>(z),
               std::forward<Vs>(zs)...);
           }
@@ -239,9 +239,9 @@ namespace Contextual::Details {
           call(T&& x, U&& y, Vs&&... zs)
           {
             if constexpr (count_types<Vs...>() == 0) {
-              return Base::mAppend(forward<T>(x), forward<U>(y));
+              return Base::mAppend(std::forward<T>(x), std::forward<U>(y));
             } else {
-              return call(Base::mAppend(x, y), forward<Vs>(zs)...);
+              return call(Base::mAppend(std::forward<T>(x), std::forward<U>(y)), std::forward<Vs>(zs)...);
             }
           }
         };
