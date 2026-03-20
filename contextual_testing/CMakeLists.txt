@@ -53,3 +53,37 @@ function(contextual_add_catch2_test name)
 endfunction()
 
 # contextual_add_catch2_test(arrow)
+
+
+include(FetchContent)
+FetchContent_Declare(rapidcheck
+  GIT_REPOSITORY https://github.com/emil-e/rapidcheck.git
+  GIT_TAG master)
+set(RC_ENABLE_GTEST ON CACHE BOOL "Enable RapidCheck GTest integration")
+FetchContent_MakeAvailable(rapidcheck)
+
+function(contextual_add_property_test name)
+  set(exe_name ${name}_laws_test)
+  set(src_name ${exe_name}.cpp)
+  add_executable(${exe_name} ${src_name})
+  target_link_libraries(${exe_name}
+    PRIVATE
+    contextual::header
+    type_utility::header
+    list_processing::header
+    GTest::gtest_main
+    rapidcheck
+    rapidcheck_gtest)
+  target_include_directories(${exe_name}
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  set_target_properties(${exe_name}
+    PROPERTIES
+    CXX_STANDARD ${contextual_CXX_STANDARD})
+  add_test(${name}_laws ${exe_name})
+endfunction()
+
+contextual_add_property_test(semigroup)
+contextual_add_property_test(monoid)
+contextual_add_property_test(functor)
+contextual_add_property_test(monad)
+contextual_add_property_test(category)
